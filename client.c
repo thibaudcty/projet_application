@@ -11,67 +11,33 @@
 
 int main(int argc, char *argv[])
 {
+    
+    read();
+   
+}
+void write(){
     int listenfd = 0;
     int connfd = 0;
-    // La socket client de thibaud ;3 test test test
-    int sockfd = 0;
-    int  n = 0;
-    // Le buffer pour recevoir la réponse du serveur
-    char recvBuff[1024] = {0};
-    char sendBuff[1025] = {0};
-    // La structure avec les informations du serveur
     struct sockaddr_in serv_addr = {0};
+    // Le buffer pour envoyer les données
+    char sendBuff[1025] = {0};
+    
+    
+    // Création de la socket serveur
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
-    /*
-     * Si l'IP du serveur n'a pas été passée en argument
-     * le programme se termine
-     */
-    if(argc != 2)
-    {
-        printf("\n Usage: %s <ip of server> \n",argv[0]);
-        return 1;
-    }
     
-    // Création de la socket
-    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        printf("\n Error : Could not create socket \n");
-        return 1;
-    }
-    
+    //Initialisation de la structure sockaddr
     serv_addr.sin_family = AF_INET;
-    // Le port sur lequel écoute le serveur
-    serv_addr.sin_port = htons(5000);
-    
-    // Copie l'adresse ip du serveur dans la structure serv_addr
-    if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)
-    {
-        printf("\n inet_pton error occured\n");
-        return 1;
-    }
-    
-    // Connection au serveur
-    if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-        printf("\n Error : Connect Failed \n");
-        return 1;
-    }
-    
-      // Association de la socket avec la structure sockaddr
-    bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+    //Accepte les connexions depuis n'importe quelle adresse
+    serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    // Le port sur lequel la socket va écouter
+    serv_addr.sin_port = htons(7000);
+     bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
     
     //La socket écoute pour des connexions
     listen(listenfd, 10);
-    
-    // Récupération du nom de la machine
     char hostname[128];
     gethostname(hostname, sizeof hostname);
-    
-    read();
-    return 0;
-}
-void write(){
-
     int pid = 0;
     while(1)
     {
@@ -101,6 +67,41 @@ void read(){
     char recvBuff[1024] = {0};
     int sockfd=0;
     int n=0;
+    struct sockaddr_in serv_addr = {0};
+    /*
+     * Si l'IP du serveur n'a pas été passée en argument
+     * le programme se termine
+     */
+    if(argc != 2)
+    {
+        printf("\n Usage: %s <ip of server> \n",argv[0]);
+        return 1;
+    }
+    
+    // Création de la socket
+    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Error : Could not create socket \n");
+        return 1;
+    }
+    
+    serv_addr.sin_family = AF_INET;
+    // Le port sur lequel écoute le serveur
+    serv_addr.sin_port = htons(7000);
+    
+    // Copie l'adresse ip du serveur dans la structure serv_addr
+    if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)
+    {
+        printf("\n inet_pton error occured\n");
+        return 1;
+    }
+    
+    // Connection au serveur
+    if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+        printf("\n Error : Connect Failed \n");
+        return 1;
+    }
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("\n Error : Could not create socket \n");
@@ -121,4 +122,5 @@ void read(){
     {
         printf("\n Read error \n");
     }
+    return 0;
  }
