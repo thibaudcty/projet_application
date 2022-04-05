@@ -11,14 +11,17 @@
 
 int main(int argc, char *argv[])
 {
+    int listenfd = 0;
+    int connfd = 0;
     // La socket client de thibaud ;3 test test test
     int sockfd = 0;
     int  n = 0;
     // Le buffer pour recevoir la réponse du serveur
     char recvBuff[1024] = {0};
+    char sendBuff[1025] = {0};
     // La structure avec les informations du serveur
     struct sockaddr_in serv_addr = {0};
-    
+    listenfd = socket(AF_INET, SOCK_STREAM, 0);
     /*
      * Si l'IP du serveur n'a pas été passée en argument
      * le programme se termine
@@ -68,6 +71,36 @@ int main(int argc, char *argv[])
     if(n < 0)
     {
         printf("\n Read error \n");
+    }
+      // Association de la socket avec la structure sockaddr
+    bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+    
+    //La socket écoute pour des connexions
+    listen(listenfd, 10);
+    
+    // Récupération du nom de la machine
+    char hostname[128];
+    gethostname(hostname, sizeof hostname);
+    int pid = 0;
+    while(1)
+    {
+        // Accepte la connexion d'une socket client
+        connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
+        
+        // Exécution d'un fork pour gérer la connexion
+        if((pid=fork())==-1) {
+            printf("erreur\n");
+            close(connfd);
+        }
+        else if(pid>0) { // Le processus père
+            close(connfd);
+        }
+        else if(pid==0) { // Le processus fils
+            snprintf(sendBuff, sizeof(sendBuff), "%s\n", hostname);
+            write(connfd, sendBuff, strlen(sendBuff));
+            
+            close(connfd);
+        }
     }
 
     return 0;

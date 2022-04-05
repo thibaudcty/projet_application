@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in serv_addr = {0};
     // Le buffer pour envoyer les données
     char sendBuff[1025] = {0};
+    char recvBuff[1024] = {0};
     
     // Création de la socket serveur
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -29,12 +30,30 @@ int main(int argc, char *argv[])
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     // Le port sur lequel la socket va écouter
     serv_addr.sin_port = htons(5000);
+    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Error : Could not create socket \n");
+        return 1;
+    }
     
     // Association de la socket avec la structure sockaddr
     bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
     
     //La socket écoute pour des connexions
     listen(listenfd, 10);
+     if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)
+    {
+        printf("\n inet_pton error occured\n");
+        return 1;
+    }
+    
+    // Connection au serveur
+    if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+        printf("\n Error : Connect Failed \n");
+        return 1;
+    }
+    
     
     // Récupération du nom de la machine
     char hostname[128];
@@ -60,5 +79,19 @@ int main(int argc, char *argv[])
             
             close(connfd);
         }
+    }
+    while ( (n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0)
+    {
+        recvBuff[n] = 0;
+        // Affichage des informations recues sur la sortie standard
+        if(fputs(recvBuff, stdout) == EOF)
+        {
+            printf("\n Error : Fputs error\n");
+        }
+    }
+    
+    if(n < 0)
+    {
+        printf("\n Read error \n");
     }
 }
