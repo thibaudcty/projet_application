@@ -11,7 +11,7 @@
 
 int main(int argc, char *argv[])
 {
-    // La socket client de thibaud ;3
+    // La socket client de thibaud ;3 test test test
     int sockfd = 0;
     int  n = 0;
     // Le buffer pour recevoir la réponse du serveur
