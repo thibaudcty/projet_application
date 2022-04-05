@@ -14,7 +14,11 @@ int main(int argc, char *argv[])
     // La socket serveur
     int listenfd = 0;
     // La socket client (récupérée avec accept())
-    int connfd = 0;
+    int connfd = 0; 
+    int num_vers=12;
+
+   int sockfd=0;
+   int n=0;
     // La structure avec les informations du serveur
     struct sockaddr_in serv_addr = {0};
     // Le buffer pour envoyer les données
@@ -29,7 +33,7 @@ int main(int argc, char *argv[])
     //Accepte les connexions depuis n'importe quelle adresse
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     // Le port sur lequel la socket va écouter
-    serv_addr.sin_port = htons(5000);
+    serv_addr.sin_port = htons(7000);
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("\n Error : Could not create socket \n");
