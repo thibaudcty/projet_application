@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 {
    
     write();    
+    return 0;
 }
 void write(){
     int listenfd = 0;
