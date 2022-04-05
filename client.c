@@ -57,21 +57,6 @@ int main(int argc, char *argv[])
         return 1;
     }
     
-    // Lecture des informations envoyées par le serveur sur la socket
-    while ( (n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0)
-    {
-        recvBuff[n] = 0;
-        // Affichage des informations recues sur la sortie standard
-        if(fputs(recvBuff, stdout) == EOF)
-        {
-            printf("\n Error : Fputs error\n");
-        }
-    }
-    
-    if(n < 0)
-    {
-        printf("\n Read error \n");
-    }
       // Association de la socket avec la structure sockaddr
     bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
     
@@ -81,6 +66,12 @@ int main(int argc, char *argv[])
     // Récupération du nom de la machine
     char hostname[128];
     gethostname(hostname, sizeof hostname);
+    
+    read();
+    return 0;
+}
+void write(){
+
     int pid = 0;
     while(1)
     {
@@ -103,5 +94,31 @@ int main(int argc, char *argv[])
         }
     }
 
-    return 0;
+
 }
+
+void read(){
+    char recvBuff[1024] = {0};
+    int sockfd=0;
+    int n=0;
+    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Error : Could not create socket \n");
+        return 1;
+    }
+
+    while ( (n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0)
+    {
+        recvBuff[n] = 0;
+        // Affichage des informations recues sur la sortie standard
+        if(fputs(recvBuff, stdout) == EOF)
+        {
+            printf("\n Error : Fputs error\n");
+        }
+    }
+    
+    if(n < 0)
+    {
+        printf("\n Read error \n");
+    }
+ }
