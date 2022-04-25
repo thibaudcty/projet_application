@@ -112,12 +112,13 @@ void read_ip(int argc, char *argv[]){
 
         FILE* fichier = NULL;
  
-        fichier = fopen("ClientsList.txt", "w");
+        fichier = fopen("ClientsList.txt", "a");
  
         if (fichier != NULL)
             {
-            fseek(fichier, 0, SEEK_END);
-            fprintf(fichier, "nouveau client test: %s",  recvBuff );
+            fprintf(fichier, "\n");
+            fprintf(fichier,"nom et addresse du client: %s", recvBuff);
+	    
             fclose(fichier);
             }
     }
