@@ -117,7 +117,7 @@ void read_ip(int argc, char *argv[]){
         if (fichier != NULL)
             {
             fprintf(fichier, "\n");
-            fprintf(fichier,"nom et addresse du client: %s", recvBuff);
+            fprintf(fichier,"nom et addresse du client:%s, %s",argv[1], recvBuff);
 	    
             fclose(fichier);
             }
