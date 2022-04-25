@@ -116,7 +116,7 @@ void read_ip(int argc, char *argv[]){
  
         if (fichier != NULL)
             {
-            fprintf(fichier, recvBuff );
+            fprintf(fichier, "Nous venons d'écrire sur ce fichier: %d",  recvBuff );
         fclose(fichier);
             }
     }
