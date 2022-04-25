@@ -63,7 +63,7 @@ void write(){
 
 }
 
-void read(){
+void read_ip(){
     char recvBuff[1024] = {0};
     int sockfd=0;
     int n=0;
