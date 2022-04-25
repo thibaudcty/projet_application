@@ -60,9 +60,6 @@ void write_ip(){
         }
     }
 
-
-}
-
 void read_ip(int argc, char *argv[]){
     char recvBuff[1024] = {0};
     int sockfd=0;
