@@ -110,6 +110,8 @@ void read_ip(int argc, char *argv[]){
             printf("\n Error : Fputs error\n");
         }
 
+        
+
         FILE* fichier = NULL;
  
         fichier = fopen("ClientsList.txt", "a");
