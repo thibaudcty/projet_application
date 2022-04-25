@@ -12,10 +12,10 @@
 int main(int argc, char *argv[])
 {
    
-    write();    
-    return 0;
+   write_ip();    
+    
 }
-void write(){
+void write_ip(){
     int listenfd = 0;
     int connfd = 0;
     struct sockaddr_in serv_addr = {0};
@@ -63,7 +63,7 @@ void write(){
 
 }
 
-void read(){
+void read_ip(int argc, char *argv[]){
     char recvBuff[1024] = {0};
     int sockfd=0;
     int n=0;
@@ -102,11 +102,7 @@ void read(){
         printf("\n Error : Connect Failed \n");
         return 1;
     }
-    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        printf("\n Error : Could not create socket \n");
-        return 1;
-    }
+   
 
     while ( (n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0)
     {
@@ -122,5 +118,5 @@ void read(){
     {
         printf("\n Read error \n");
     }
-    return 0;
+    return 0;	   
  }
