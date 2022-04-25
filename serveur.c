@@ -12,7 +12,7 @@
 int main(int argc, char *argv[])
 {
    
-   write_ip();    
+   read_ip();    
     
 }
 void write_ip(){
@@ -59,7 +59,7 @@ void write_ip(){
             close(connfd);
         }
     }
-
+}
 void read_ip(int argc, char *argv[]){
     char recvBuff[1024] = {0};
     int sockfd=0;
