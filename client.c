@@ -113,14 +113,16 @@ void read_ip(int argc, char *argv[]){
             printf("\n Error : Fputs error\n");
         }
 
+
         FILE* fichier = NULL;
  
         fichier = fopen("ServeursList.txt", "a");
  
         if (fichier != NULL)
             {
+            
             fprintf(fichier, "\n");
-            fprintf(fichier,"nom et addresse du serveur: %s", recvBuff);
+            fprintf(fichier,"nom et addresse du serveur :%s, %s",argv[1], recvBuff);
 	    
             fclose(fichier);
             }
