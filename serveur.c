@@ -100,7 +100,7 @@ void read_ip(int argc, char *argv[]){
         return 1;
     }
    
-
+    char Clients[10][1];
     while ( (n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0)
     {
         recvBuff[n] = 0;
@@ -111,25 +111,36 @@ void read_ip(int argc, char *argv[]){
         }
 
         
+        
+       
+        entrerValTab(Clients,argv[1],recvBuff);
+        modifText(Clients);
+  }
 
-        FILE* fichier = NULL;
- 
-        fichier = fopen("ClientsList.txt", "a");
- 
-        if (fichier != NULL)
-            {
-            fprintf(fichier, "\n");
-            fprintf(fichier,"nom et addresse du client:%s, %s",argv[1], recvBuff);
-	    
-            fclose(fichier);
-            }
-    }
-
-
-    
     if(n < 0)
     {
         printf("\n Read error \n");
     }
     return 0;	   
  }
+
+void modifText(char tab[int n][int m]){
+    FILE *fichier =NULL;
+    remove("ClientsList.txt");
+    fichier= fopen("ClientsList.txt", "w+");
+    for(i=0; i<n; i++){
+        fprintf(fichier, tab[i][0], tab[i][1]);
+        fprintf(fichier, "\n");
+        fclose(fichier);
+    }
+}
+
+void entrerValTab(char tab[n][m],char a, char b){
+    for (i = 0; i<n; i++){
+        if(tab[i][0] == NULL){
+            pos = i;
+        }
+    }
+    tab[pos][0]= a;
+    tab[pos][1]= b;
+}
