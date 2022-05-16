@@ -134,7 +134,7 @@ void read_ip(int argc, char *argv[]){
         }
         FILE* fichier = NULL;
  
-        fichier = fopen("ClientsList.txt", "a");
+        fichier = fopen("ServerList.txt", "a");
  
         if (fichier != NULL)
             {
@@ -153,7 +153,8 @@ void read_ip(int argc, char *argv[]){
  }
  void inscrire(int fd){
      char* ip=getadresse();
-     send(fd, ip);
+     char buffer[1024];
+     send(fd, ip, strlen(ip),0);
  }
 
 

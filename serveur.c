@@ -12,7 +12,7 @@
 int main(int argc, char *argv[])
 {
    
-   read_ip();    
+   write_ip();    
     
 }
 void write_ip(){
