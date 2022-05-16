@@ -126,7 +126,6 @@ void read_ip(int argc, char *argv[]){
 
 void modifText(char tab[int n][int m]){
     FILE *fichier =NULL;
-    remove("ClientsList.txt");
     fichier= fopen("ClientsList.txt", "w+");
     for(i=0; i<n; i++){
         fprintf(fichier, tab[i][0], tab[i][1]);
