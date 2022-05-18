@@ -1,14 +1,1 @@
 
-dbdsfgb : ubuntumeftahi
-
-dbdsfgb : ubuntumeftahi
-
-nom et addresse du client:0.000000, À¨p
-nom et addresse du client:0.000000, À¨p
-nom et addresse du client:À¨p, ubuntumeftahi
-
-nom et addresse du client:./serveur, ubuntumeftahi
-
-nom et addresse du client:192.168.112.129, ubuntumeftahi
-
-nom et addresse du client:192.168.112.129, ubuntumeftahi
