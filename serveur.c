@@ -1,19 +1,19 @@
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <netinet/in.h>
-#include <netdb.h>
+#include <arpa/inet.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
-#include <arpa/inet.h>
+#include <string.h>
+#include <sys/types.h>
+#include <time.h>
 
 int main(int argc, char *argv[])
 {
+   
+   read_ip();    
     
-    read_ip();
-       
 }
 void write_ip(){
     int listenfd = 0;
@@ -59,10 +59,7 @@ void write_ip(){
             close(connfd);
         }
     }
-
-
 }
-
 void read_ip(int argc, char *argv[]){
     char recvBuff[1024] = {0};
     int sockfd=0;
@@ -113,25 +110,26 @@ void read_ip(int argc, char *argv[]){
             printf("\n Error : Fputs error\n");
         }
 
+        
+
         FILE* fichier = NULL;
  
-        fichier = fopen("ServeursList.txt", "a");
+        fichier = fopen("ClientsList.txt", "a");
  
         if (fichier != NULL)
             {
             fprintf(fichier, "\n");
-            fprintf(fichier,"nom et addresse du serveur: %s", recvBuff);
+            fprintf(fichier,"nom et addresse du client: %s", recvBuff);
 	    
             fclose(fichier);
             }
-
-
-
     }
+
+
     
     if(n < 0)
     {
         printf("\n Read error \n");
     }
-    return 0;
+    return 0;	   
  }
