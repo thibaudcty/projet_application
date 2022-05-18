@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -8,13 +9,12 @@
 #include <unistd.h>
 #include <errno.h>
 #include <arpa/inet.h>
+#include <sys/ioctl.h>
+#include <linux/if.h>
 
-int main()
-{
-    
-    read_ip();
-       
-}
+
+
+
 
 
 
@@ -81,10 +81,25 @@ char* getadresse(){
       printf("IP Address is %s.\n", inet_ntoa(ipaddress->sin_addr));
       return inet_ntoa(ipaddress->sin_addr);
 }
+void inscrire(int fd){
+     char* hostname[128];
+     gethostname(hostname, sizeof hostname);
+     char* ip=getadresse();
+     strcat(ip," ");
+     strcat(ip, hostname);
+     
+     send(fd, ip, strlen(ip),0);
+ }
 
+int main(int argc, char* argv[])
+{
+    
+    read_ip();
+       
+}
 
 void read_ip(int argc, char *argv[]){
-    char sendBuff[1024] = {0};
+    char recvBuff[1024] = {0};
     int sockfd=0;
     int n=0;
     struct sockaddr_in serv_addr = {0};
@@ -124,18 +139,11 @@ void read_ip(int argc, char *argv[]){
     }
     inscrire(sockfd);
    
-        FILE* fichier = NULL;
+    FILE* fichier = fopen("ServerList.txt", "a");
  
-        fichier = fopen("ServerList.txt", "a");
- 
-        if (fichier != NULL)
-            {
-            fprintf(fichier, "\n");
-            fprintf(fichier,"addresse du server:%s", sendBuff);
+    fprintf(fichier,"addresse du server:%s", argv[1]);
 	    
-            fclose(fichier);
-            }
-    }
+          
 
     if(n < 0)
     {
@@ -143,12 +151,7 @@ void read_ip(int argc, char *argv[]){
     }
     return 0;	   
  }
- void inscrire(int fd){
-     char* ip=getadresse();
-     char buffer[1024];
-     send(fd, ip, strlen(ip),0);
- }
-
+ 
 
 
 
