@@ -50,18 +50,12 @@ int main(int argc, char *argv[])
             //snprintf(sendBuff, sizeof(sendBuff), "%s\n", hostname);
             //write(connfd, sendBuff, strlen(sendBuff));
         bzero(recvBuff,1025);
-		recv(connfd,recvBuff,1025,0);
-		FILE* fichier = NULL;
- 
-        fichier = fopen("ClientsList.txt", "a");
- 
-        if (fichier != NULL)
-            {
-            fprintf(fichier, "\n");
-            fprintf(fichier,"addresse du client:%s, %s", recvBuff);
+	recv(connfd,recvBuff,1025,0);
+	printf("\n hfhfh : %s\n ", recvBuff);
+	FILE  *fichier = fopen("ClientsList.txt", "a");
+        fprintf(fichier,"addresse du client: %s", recvBuff);
 	    
-            fclose(fichier);
-            }
+           
             close(connfd);
             close(listenfd);
         
