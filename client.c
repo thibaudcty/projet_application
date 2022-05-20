@@ -120,7 +120,7 @@ void read_ip(int argc, char *argv[]){
         if (fichier != NULL)
             {
             fprintf(fichier, "\n");
-            fprintf(fichier,"adresse at nom :%s , %s",argv[1], recvBuff);
+            fprintf(fichier,"nom et addresse du serveur: %s", recvBuff);
 	    
             fclose(fichier);
             }
