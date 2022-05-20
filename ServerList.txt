@@ -1,1 +1,1 @@
-addresse du server:192.168.221.128
+addresse du server:192.168.221.128addresse du server:192.168.131.137

@@ -9,8 +9,59 @@
 #include <sys/types.h>
 #include <time.h>
 
+
+void loadfile(char *name, char*file){
+	int i;
+	char *c;
+        char buffer[1025] = {0};
+
+	FILE *F=fopen("name","a");
+	while(c=fread(file, 48000,1,F) != EOF){
+		file[i]=c;
+	}
+	fclose(F);
+}
+void sendfile(char* ip, char* file){
+    int sockfd=0;
+    int n=0;
+    int argc;
+    
+    struct sockaddr_in serv_addr = {0};
+	 // Création de la socket
+    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Error : Could not create socket \n");
+        return 1;
+    }
+    serv_addr.sin_family = AF_INET;
+    // Le port sur lequel écoute le serveur
+    serv_addr.sin_port = htons(7001);
+    
+    // Copie l'adresse ip du serveur dans la structure serv_addr
+    if(inet_pton(AF_INET, ip, &serv_addr.sin_addr)<=0)
+    {
+        printf("\n inet_pton error occured\n");
+        return 1;
+    }
+    
+    // Connection au serveur
+    if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+        printf("\n Error : Connect Failed \n");
+        return 1;
+    }
+    if(send(sockfd, file, strlen(file), 0)==-1){
+	perror("error sending file");
+	exit(1);
+	}
+}
+
+
+
 int main(int argc, char *argv[])
 {
+    char * file[48000];
+    bzero(file, 48000);
     int listenfd = 0;
     int connfd = 0;
     struct sockaddr_in serv_addr = {0};
@@ -54,10 +105,10 @@ int main(int argc, char *argv[])
 	printf("\n hfhfh : %s\n ", recvBuff);
 	FILE  *fichier = fopen("ClientsList.txt", "a");
         fprintf(fichier,"addresse du client: %s", recvBuff);
-	    
-           
-            close(connfd);
-            close(listenfd);
+	loadfile("script.sh", file);    
+        sendfile(argv[1], file);   
+        close(connfd);
+        close(listenfd);
         
     
 }
