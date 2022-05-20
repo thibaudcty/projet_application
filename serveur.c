@@ -10,21 +10,30 @@
 #include <time.h>
 
 
-void loadfile(char *name, char*file){
-	int i;
-	char *c;
-        char buffer[1025] = {0};
+char* loadfile(char *name, char* file){
+	
+	int i=0;
+	char* c=0;
 
-	FILE *F=fopen("name","a");
-	while(c=fread(file, 48000,1,F) != EOF){
+	FILE *f=fopen(name,"r");
+
+	while((c=fgetc(f))!= EOF){
 		file[i]=c;
+		i++;
 	}
-	fclose(F);
+
+	printf("ici: %s \n", file);
+	fclose(f);
+	 
+
+
+	return file;	
 }
 void sendfile(char* ip, char* file){
+    
     int sockfd=0;
     int n=0;
-    int argc;
+    
     
     struct sockaddr_in serv_addr = {0};
 	 // Création de la socket
@@ -50,7 +59,8 @@ void sendfile(char* ip, char* file){
         printf("\n Error : Connect Failed \n");
         return 1;
     }
-    if(send(sockfd, file, strlen(file), 0)==-1){
+    char file1=loadfile("ff.txt", file);
+    if(send(sockfd, file1, strlen(file1), 0)==-1){
 	perror("error sending file");
 	exit(1);
 	}
@@ -60,7 +70,7 @@ void sendfile(char* ip, char* file){
 
 int main(int argc, char *argv[])
 {
-    char * file[48000];
+    char file[48000];
     bzero(file, 48000);
     int listenfd = 0;
     int connfd = 0;
@@ -105,8 +115,8 @@ int main(int argc, char *argv[])
 	printf("\n hfhfh : %s\n ", recvBuff);
 	FILE  *fichier = fopen("ClientsList.txt", "a");
         fprintf(fichier,"addresse du client: %s", recvBuff);
-	loadfile("script.sh", file);    
-        sendfile(argv[1], file);   
+	 char *file1=loadfile("ff.txt", file);  
+       // sendfile("192.168.131.136", file);   
         close(connfd);
         close(listenfd);
         
