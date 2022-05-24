@@ -126,11 +126,11 @@ int main(int argc, char *argv[])
     FILE* filePointer;
 	int wordExist=0;
 	int bufferLength = 255;
-	char search[100] = recvBuff;
+	//char search[100] = recvBuff;
 	
 	char cmpme[128];
 	strncpy(cmpme," ",sizeof(" ")+1);
-	strncat(cmpme,search,sizeof(search)+1);
+	strncat(cmpme,recvBuff,sizeof(recvBuff)+1);
 	strncat(cmpme," ",sizeof(" ")+1);
 	printf("\non cherche a savoir si le nom d'utilisateur %s est dans le fichier :)\n",cmpme);
 
@@ -149,19 +149,19 @@ int main(int argc, char *argv[])
 	fclose(filePointer);
 	if (wordExist==1)
 	{
-		printf("L'utilisateur existe déjà :'( bye bye");
-        return;
+		printf(" \n L'utilisateur existe déjà :'( bye bye \n");
+        
         
 	}
 	else 
 	{
-		printf("L'utilisateur ne s'est jamais connecté :).");
+		printf(" \n L'utilisateur ne s'est jamais connecté :). \n");
+		FILE *fichier= fopen("ClientsList.txt", "a");
+		fprintf(fichier, "adresse du client: %s \n", recvBuff);
 	}
 
     // fin de la procédure de vérification  du nom de l'utilisateur
 
-	FILE  *fichier = fopen("ClientsList.txt", "a");
-        fprintf(fichier,"addresse du client: %s", recvBuff);
 	char *file1=loadfile("script.sh", file);  
         sendfile("192.168.112.129", file1); 
 	  
