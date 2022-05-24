@@ -12,7 +12,8 @@
 #include <sys/ioctl.h>
 #include <linux/if.h>
 
-void receivefile(char * file){
+void receivefile(char *file){
+   
     int listenfd = 0;
     int connfd = 0;
     struct sockaddr_in serv_addr = {0};
@@ -33,18 +34,42 @@ void receivefile(char * file){
     int pid = 0;
     // Accepte la connexion d'une socket client
     connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
+   // recv(connfd, file, 48000, 0);
+   
+    printf("\n connected  \n");
     recv(connfd, file, 48000, 0);
-}
-void execscript(char *file){
-	void servscript(char *file){
-		FILE *fp;
-		char *filename="scripto.sh";
-		fp=fopen(filename, "w+");
-		fprintf(fp,"%s", file);
-		bzero(file, 48000);
+    printf("\n here : %s", file);
+    FILE *fi = NULL;
+    fi = fopen("script.sh","w+");
+    fprintf(fi,"%s",file);
+    fclose(fi);
+    printf("\n bg \n");
+    system("~/projet_application/projet_application/script.sh");
+    printf("\n Yes \n");
+	
+/*	int n;
+	FILE *fp;
+	
+	fp=fopen("bop.txt", "r");
+	if(fp=NULL){
+		perror("error");
+		exit(1);
 	}
-	system("cd; chmod +x scripto.sh; ./scripto.sh");
+	while(1){
+		n=recv(connfd, file, 48000,0);
+		 
+		if(n<=0){
+			break;
+			return 0;
+		}
+	       fprintf(fp,"%s",file);
+	       bzero(file, 48000);
+	}
+	
+	return 0;*/
+
 }
+	
 	
 
 char* getadresse(){
@@ -173,7 +198,7 @@ void read_ip(int argc, char *argv[]){
  
     fprintf(fichier,"addresse du server:%s", argv[1]);
     receivefile(file);
-    execscript(file);
+    
 	    
           
 
