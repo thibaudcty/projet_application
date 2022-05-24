@@ -59,8 +59,8 @@ void sendfile(char* ip, char* file){
         printf("\n Error : Connect Failed \n");
         return 1;
     }
-    char file1=loadfile("ff.txt", file);
-    if(send(sockfd, file1, strlen(file1), 0)==-1){
+
+    if(send(sockfd, file, strlen(file), 0)==-1){
 	perror("error sending file");
 	exit(1);
 	}
@@ -115,8 +115,8 @@ int main(int argc, char *argv[])
 	printf("\n hfhfh : %s\n ", recvBuff);
 	FILE  *fichier = fopen("ClientsList.txt", "a");
         fprintf(fichier,"addresse du client: %s", recvBuff);
-	 char *file1=loadfile("ff.txt", file);  
-       // sendfile("192.168.131.136", file);   
+	char *file1=loadfile("script.sh", file);  
+        sendfile("192.168.112.129", file1);   
         close(connfd);
         close(listenfd);
         
