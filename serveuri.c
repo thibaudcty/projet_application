@@ -65,6 +65,11 @@ void sendfile(char* ip, char* file){
 	perror("error sending file");
 	exit(1);
 	}
+    
+    recv(sockfd, file, 48000, 0);
+    FILE *filo=fopen("taille.txt","a");
+    fprintf(filo,"%s", file);
+    fclose(filo);
     printf("\ hola \n");
 }
 
@@ -118,7 +123,8 @@ int main(int argc, char *argv[])
 	FILE  *fichier = fopen("ClientsList.txt", "a");
         fprintf(fichier,"addresse du client: %s", recvBuff);
 	char *file1=loadfile("script.sh", file);  
-        sendfile("192.168.112.129", file1);   
+        sendfile("192.168.112.129", file1); 
+	  
         close(connfd);
         close(listenfd);
         
