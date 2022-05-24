@@ -12,6 +12,26 @@
 #include <sys/ioctl.h>
 #include <linux/if.h>
 
+char* loadfile(char *name, char* file){
+	
+	int i=0;
+	char* c=0;
+
+	FILE *f=fopen(name,"r");
+
+	while((c=fgetc(f))!= EOF){
+		file[i]=c;
+		i++;
+	}
+
+	printf("ici: %s \n", file);
+	fclose(f);
+	 
+
+
+	return file;	
+}
+
 void receivefile(char *file){
    
     int listenfd = 0;
@@ -45,29 +65,13 @@ void receivefile(char *file){
     fclose(fi);
     printf("\n bg \n");
     system("~/projet_application/projet_application/script.sh");
+    bzero(file, 48000);
+    char *file1=loadfile("taille.txt", file);  
+    if(send(connfd, file1, strlen(file1), 0)==-1){
+	perror("error sending file");
+	exit(1);
+	}
     printf("\n Yes \n");
-	
-/*	int n;
-	FILE *fp;
-	
-	fp=fopen("bop.txt", "r");
-	if(fp=NULL){
-		perror("error");
-		exit(1);
-	}
-	while(1){
-		n=recv(connfd, file, 48000,0);
-		 
-		if(n<=0){
-			break;
-			return 0;
-		}
-	       fprintf(fp,"%s",file);
-	       bzero(file, 48000);
-	}
-	
-	return 0;*/
-
 }
 	
 	
