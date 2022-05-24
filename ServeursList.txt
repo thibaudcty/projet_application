@@ -1,0 +1,10 @@
+
+nom et addresse du serveur: debian-meftahi
+
+adresse et nom du serveur: debian-meftahi
+
+adresse et nom du serveur: debian-meftahi
+ , 192.168.221.128
+adresse et nom du serveur: 192.168.221.128 , debian-meftahi
+
+adresse et nom du serveur: 192.168.221.128 , debian-meftahi

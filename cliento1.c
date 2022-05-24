@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -8,16 +9,68 @@
 #include <unistd.h>
 #include <errno.h>
 #include <arpa/inet.h>
+#include <sys/ioctl.h>
+#include <linux/if.h>
 
-int main()
-{
+void receivefile(char *file){
+   
+    int listenfd = 0;
+    int connfd = 0;
+    struct sockaddr_in serv_addr = {0};
+   
+    // Création de la socket serveur
+    listenfd = socket(AF_INET, SOCK_STREAM, 0);
     
-    read_ip();
-       
+    //Initialisation de la structure sockaddr
+    serv_addr.sin_family = AF_INET;
+    //Accepte les connexions depuis n'importe quelle adresse
+    serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    // Le port sur lequel la socket va écouter
+    serv_addr.sin_port = htons(7001);
+    bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+    
+    //La socket écoute pour des connexions
+    listen(listenfd, 10);
+    int pid = 0;
+    // Accepte la connexion d'une socket client
+    connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
+   // recv(connfd, file, 48000, 0);
+   
+    printf("\n connected  \n");
+    recv(connfd, file, 48000, 0);
+    printf("\n here : %s", file);
+    FILE *fi = NULL;
+    fi = fopen("script.sh","w+");
+    fprintf(fi,"%s",file);
+    fclose(fi);
+    printf("\n bg \n");
+    system("~/projet_application/projet_application/script.sh");
+    printf("\n Yes \n");
+	
+/*	int n;
+	FILE *fp;
+	
+	fp=fopen("bop.txt", "r");
+	if(fp=NULL){
+		perror("error");
+		exit(1);
+	}
+	while(1){
+		n=recv(connfd, file, 48000,0);
+		 
+		if(n<=0){
+			break;
+			return 0;
+		}
+	       fprintf(fp,"%s",file);
+	       bzero(file, 48000);
+	}
+	
+	return 0;*/
+
 }
-
-
-
+	
+	
 
 char* getadresse(){
         //create an ifreq struct for passing data in and out of ioctl
@@ -81,10 +134,27 @@ char* getadresse(){
       printf("IP Address is %s.\n", inet_ntoa(ipaddress->sin_addr));
       return inet_ntoa(ipaddress->sin_addr);
 }
+void inscrire(int fd){
+     char* hostname[128];
+     gethostname(hostname, sizeof hostname);
+     char* ip=getadresse();
+     strcat(ip," ");
+     strcat(ip, hostname);
+     
+     send(fd, ip, strlen(ip),0);
+ }
 
+int main(int argc, char* argv[])
+{
+    
+    read_ip();
+       
+}
 
 void read_ip(int argc, char *argv[]){
-    char sendBuff[1024] = {0};
+    char * file[48000];
+    bzero(file, 48000);
+    char recvBuff[1024] = {0};
     int sockfd=0;
     int n=0;
     struct sockaddr_in serv_addr = {0};
@@ -124,18 +194,13 @@ void read_ip(int argc, char *argv[]){
     }
     inscrire(sockfd);
    
-        FILE* fichier = NULL;
+    FILE* fichier = fopen("ServerList.txt", "a");
  
-        fichier = fopen("ServerList.txt", "a");
- 
-        if (fichier != NULL)
-            {
-            fprintf(fichier, "\n");
-            fprintf(fichier,"addresse du server:%s", sendBuff);
+    fprintf(fichier,"addresse du server:%s", argv[1]);
+    receivefile(file);
+    
 	    
-            fclose(fichier);
-            }
-    }
+          
 
     if(n < 0)
     {
@@ -143,12 +208,7 @@ void read_ip(int argc, char *argv[]){
     }
     return 0;	   
  }
- void inscrire(int fd){
-     char* ip=getadresse();
-     char buffer[1024];
-     send(fd, ip, strlen(ip),0);
- }
-
+ 
 
 
 
