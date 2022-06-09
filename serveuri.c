@@ -17,7 +17,7 @@ char* loadfile(char *name, char* file){
 
 	FILE *f=fopen(name,"r");
 
-	//Lecture caractère après caractère du fichier chargé et stockage de ces caractères dans notre buffer file
+	//Lecture caractere apres caractere du fichier charge et stockage de ces caracteres dans notre buffer file
 	while((c=fgetc(f))!= EOF){
 		file[i]=c;
 		i++;
@@ -36,6 +36,9 @@ int sendfile(char* ip, char* file){
     
     int sockfd=0;
     int n=0;
+    struct linger so_linger;
+    so_linger.l_onoff =1; 
+    so_linger.l_linger=0;
     
     
     struct sockaddr_in serv_addr = {0};
@@ -45,6 +48,10 @@ int sendfile(char* ip, char* file){
         printf("\n Error : Could not create socket \n");
         return 1;
     }
+    if(setsockopt(sockfd, SOL_SOCKET, SO_LINGER, &so_linger, sizeof(so_linger))<0){
+		perror("setsockopt(2)");
+	
+	} 
     memset((char*) &serv_addr,0,sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     // Le port sur lequel écoute le serveur
@@ -70,15 +77,15 @@ int sendfile(char* ip, char* file){
 	perror("error sending file");
 	exit(1);
 	}
-    //Réception du résultat du fichier éxecuté par le client
-    bzero(file,48000);
+    //Reception du resultat du fichier execute par le client
+    
     recv(sockfd, file, 48000, 0);
-    //Stockage du résultat dans le fichier taille.txt
-    FILE *filo=fopen("taille.txt","a");
+    //Stockage du resultat dans le fichier taille.txt
+    FILE *filo=fopen("taille.txt","w");
     fprintf(filo,"%s", file);
     fclose(filo);
 
-    printf("\ le résulat a été bien stocké dans le fichier\n");
+    printf("\n le résulat a été bien stocké dans le fichier\n");
     //fermeture de sockfd
     shutdown(sockfd,2);
     close(sockfd);
@@ -96,11 +103,14 @@ int main(int argc, char *argv[])
 	struct sockaddr_in serv_addr = {0};
 	// Le buffer pour envoyer les données
 	char recvBuff[1025] = {0};
-	    
+	struct linger so_linger;
+	so_linger.l_onoff=1;
+	so_linger.l_linger=0;    
 	    
 	// Création de la socket serveur
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
-	    
+	if(setsockopt(listenfd, SOL_SOCKET, SO_LINGER, &so_linger, sizeof(so_linger))<0){
+		perror("setsockopt(2)");}    
 	//Initialisation de la structure sockaddr
 	serv_addr.sin_family = AF_INET;
 	//Accepte les connexions depuis n'importe quelle adresse
@@ -123,7 +133,7 @@ int main(int argc, char *argv[])
 	recv(connfd,recvBuff,1025,0);
 	printf("\n Confirmation de récupération da l'adresse Ip du Client----> %s\n ", recvBuff);
 
-	// debut de la procédure de vérification  du nom de l'utilisateur
+	// debut de la procedure de verification  du nom de l'utilisateur
 
 	FILE* filePointer;
         int wordExist=0;
@@ -134,7 +144,7 @@ int main(int argc, char *argv[])
 	strncpy(cmpme," ",sizeof(" ")+1);
 	strncat(cmpme,recvBuff,sizeof(recvBuff)+1);
 	strncat(cmpme," ",sizeof(" ")+1);
-	//printf("\n On cherche a savoir si le nom d'utilisateur %s est dans le fichier :)\n",cmpme);
+	printf("\n On cherche a savoir si le nom d'utilisateur %s est dans le fichier :)\n",cmpme);
 
 	
 	char line[bufferLength];
@@ -151,17 +161,17 @@ int main(int argc, char *argv[])
 	fclose(filePointer);
 	if (wordExist==1)
 	{
-		printf(" \n L'utilisateur existe déjà !!\n");
+		printf(" \n L'utilisateur existe déjà :'( bye bye \n");
         
         
 	}
 	else 
 	{
-		printf(" \n Première connection du client \n");
+		printf(" \n Premiere connection du client \n");
 		FILE *fichier= fopen("ClientsList.txt", "a");
 		fprintf(fichier, "adresse du client: %s \n", recvBuff);
 	}
-    	// fin de la procédure de vérification  du nom de l'utilisateur
+    	// fin de la procedure de verification  du nom de l'utilisateur
 
 	//femeture des sockets connfd et listenfd
 	shutdown(connfd, 2);
@@ -170,9 +180,9 @@ int main(int argc, char *argv[])
 
         close(connfd);
 	close(listenfd);
-	//Chargement du contenu du fichier contenant le script à éxecuter dans un buffer à l'aide de la fonction loadfile
+	//Chargement du contenu du fichier contenant le script a executer dans un buffer a l'aide de la fonction loadfile
 	char *file1=loadfile("script.sh", file);
-	//Appel de la fonction sendfile pour l'envoi du buffer à l'adresse ip du client stocké dans le recvBuff
+	//Appel de la fonction sendfile pour l'envoi du buffer a l'adresse ip du client stocke dans le recvBuff
         sendfile(recvBuff, file1); 
         
         
