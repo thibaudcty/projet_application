@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <time.h>
 
-
+//fonction pour stocker le contenu d'un fichier dans un buffer
 char* loadfile(char *name, char* file){
 	
 	int i=0;
@@ -17,6 +17,7 @@ char* loadfile(char *name, char* file){
 
 	FILE *f=fopen(name,"r");
 
+	//Lecture caractère après caractère du fichier chargé et stockage de ces caractères dans notre buffer file
 	while((c=fgetc(f))!= EOF){
 		file[i]=c;
 		i++;
@@ -29,6 +30,8 @@ char* loadfile(char *name, char* file){
 
 	return file;	
 }
+
+//fonction pour envoyer le fichier contenant le script au client
 int sendfile(char* ip, char* file){
     
     int sockfd=0;
@@ -62,16 +65,21 @@ int sendfile(char* ip, char* file){
     }
     printf(" \n connected \n");
     
+    //Envoie du buffer contenu du fichier contenant le script à l'aide de la fonction send
     if(send(sockfd, file, strlen(file), 0)==-1){
 	perror("error sending file");
 	exit(1);
 	}
-    
+    //Réception du résultat du fichier éxecuté par le client
+    bzero(file,48000);
     recv(sockfd, file, 48000, 0);
+    //Stockage du résultat dans le fichier taille.txt
     FILE *filo=fopen("taille.txt","a");
     fprintf(filo,"%s", file);
     fclose(filo);
+
     printf("\ hola \n");
+    //fermeture de sockfd
     shutdown(sockfd,2);
     close(sockfd);
     return 0;
@@ -81,54 +89,44 @@ int sendfile(char* ip, char* file){
 
 int main(int argc, char *argv[])
 {
-    char file[48000];
-    bzero(file, 48000);
-    int listenfd=0;
-    int connfd=0;
-    struct sockaddr_in serv_addr = {0};
-    // Le buffer pour envoyer les données
-    char recvBuff[1025] = {0};
-    
-    
-    // Création de la socket serveur
-    listenfd = socket(AF_INET, SOCK_STREAM, 0);
-    
-    //Initialisation de la structure sockaddr
-    serv_addr.sin_family = AF_INET;
-    //Accepte les connexions depuis n'importe quelle adresse
-    serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    // Le port sur lequel la socket va écouter
-    serv_addr.sin_port = htons(7000);
-     bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
-    
-    //La socket écoute pour des connexions
-    listen(listenfd, 10);
-    char hostname[128];
-    gethostname(hostname, sizeof hostname);
-    int pid = 0;
-   
-        // Accepte la connexion d'une socket client
-        connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
-        
-        // Exécution d'un fork pour gérer la connexion
-       // if((pid=fork())==-1) {
-        //    printf("erreur\n");
-          //  close(connfd);
-        //}
-        //else if(pid>0) { // Le processus père
-          //  close(connfd);
-        //}
-        //else if(pid==0) { // Le processus fils
-            //snprintf(sendBuff, sizeof(sendBuff), "%s\n", hostname);
-            //write(connfd, sendBuff, strlen(sendBuff));
-        bzero(recvBuff,1025);
+	char file[48000];
+	bzero(file, 48000);
+	int listenfd=0;
+	int connfd=0;
+	struct sockaddr_in serv_addr = {0};
+	// Le buffer pour envoyer les données
+	char recvBuff[1025] = {0};
+	    
+	    
+	// Création de la socket serveur
+	listenfd = socket(AF_INET, SOCK_STREAM, 0);
+	    
+	//Initialisation de la structure sockaddr
+	serv_addr.sin_family = AF_INET;
+	//Accepte les connexions depuis n'importe quelle adresse
+	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	// Le port sur lequel la socket va écouter
+	serv_addr.sin_port = htons(7000);
+	bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+	    
+	//La socket écoute pour des connexions
+	listen(listenfd, 10);
+	char hostname[128];
+	gethostname(hostname, sizeof hostname);
+	int pid = 0;
+	   
+		
+	connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
+		
+		
+	bzero(recvBuff,1025);
 	recv(connfd,recvBuff,1025,0);
 	printf("\n hfhfh : %s\n ", recvBuff);
 
-    // debut de la procédure de vérification  du nom de l'utilisateur
+	// debut de la procédure de vérification  du nom de l'utilisateur
 
-    FILE* filePointer;
-	int wordExist=0;
+	FILE* filePointer;
+        int wordExist=0;
 	int bufferLength = 255;
 	//char search[100] = recvBuff;
 	
@@ -163,22 +161,18 @@ int main(int argc, char *argv[])
 		FILE *fichier= fopen("ClientsList.txt", "a");
 		fprintf(fichier, "adresse du client: %s \n", recvBuff);
 	}
+    	// fin de la procédure de vérification  du nom de l'utilisateur
 
-    // fin de la procédure de vérification  du nom de l'utilisateur
-<<<<<<< HEAD
-
-	char *file1=loadfile("script.sh", file);  
-        sendfile(recvBuff, file1); 
-	  
-=======
+	//femeture des sockets connfd et listenfd
 	shutdown(connfd, 2);
 	shutdown(listenfd,2);
 	
->>>>>>> bdb42e174a35b1634e7f4adf6c9b89328998bf05
+
         close(connfd);
 	close(listenfd);
+	//Chargement du contenu du fichier contenant le script à éxecuter dans un buffer à l'aide de la fonction loadfile
 	char *file1=loadfile("script.sh", file);
-	printf("\n adresse du client: %s \n", recvBuff);  
+	//Appel de la fonction sendfile pour l'envoi du buffer à l'adresse ip du client stocké dans le recvBuff
         sendfile(recvBuff, file1); 
         
         
