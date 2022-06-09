@@ -29,7 +29,7 @@ char* loadfile(char *name, char* file){
 
 	return file;	
 }
-void sendfile(char* ip, char* file){
+int sendfile(char* ip, char* file){
     
     int sockfd=0;
     int n=0;
@@ -42,6 +42,7 @@ void sendfile(char* ip, char* file){
         printf("\n Error : Could not create socket \n");
         return 1;
     }
+    memset((char*) &serv_addr,0,sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     // Le port sur lequel écoute le serveur
     serv_addr.sin_port = htons(7001);
@@ -71,6 +72,9 @@ void sendfile(char* ip, char* file){
     fprintf(filo,"%s", file);
     fclose(filo);
     printf("\ hola \n");
+    shutdown(sockfd,2);
+    close(sockfd);
+    return 0;
 }
 
 
@@ -79,8 +83,8 @@ int main(int argc, char *argv[])
 {
     char file[48000];
     bzero(file, 48000);
-    int listenfd = 0;
-    int connfd = 0;
+    int listenfd=0;
+    int connfd=0;
     struct sockaddr_in serv_addr = {0};
     // Le buffer pour envoyer les données
     char recvBuff[1025] = {0};
@@ -161,12 +165,22 @@ int main(int argc, char *argv[])
 	}
 
     // fin de la procédure de vérification  du nom de l'utilisateur
+<<<<<<< HEAD
 
 	char *file1=loadfile("script.sh", file);  
         sendfile(recvBuff, file1); 
 	  
+=======
+	shutdown(connfd, 2);
+	shutdown(listenfd,2);
+	
+>>>>>>> bdb42e174a35b1634e7f4adf6c9b89328998bf05
         close(connfd);
-        close(listenfd);
+	close(listenfd);
+	char *file1=loadfile("script.sh", file);
+	printf("\n adresse du client: %s \n", recvBuff);  
+        sendfile(recvBuff, file1); 
+        
         
     
 }

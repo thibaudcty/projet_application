@@ -1,1 +1,6 @@
 adresse du client: 192.168.112.129 ubuntumeftahi 
+adresse du client: 192.168.154.138 ubuntumeftahi 
+adresse du client: 192.168.132.133 
+adresse du client: 192.168.150.168 
+adresse du client:  
+adresse du client: 192.168.150.168 ubuntumeftahi 
