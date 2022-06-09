@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -8,15 +9,19 @@
 #include <unistd.h>
 #include <errno.h>
 #include <arpa/inet.h>
+#include <sys/ioctl.h>
+#include <linux/if.h>
 
-<<<<<<< HEAD:cliento1.c
+
+//fonction pour stocker les données d'un fichier dans un buffer
 char* loadfile(char *name, char* file){
 	
 	int i=0;
 	char* c=0;
 
 	FILE *f=fopen(name,"r");
-
+        
+        //Lecture caractère après caractère du fichier chargé et stockage de ces caractères dans notre buffer file
 	while((c=fgetc(f))!= EOF){
 		file[i]=c;
 		i++;
@@ -30,10 +35,12 @@ char* loadfile(char *name, char* file){
 	return file;	
 }
 
+
+//fonction pour recevoir le fichier script depuis le serveur
 void receivefile(char *file){
    
-    int listenfd = 0;
-    int connfd = 0;
+    int listenfd=0 ;
+    int connfd=0 ;
     struct sockaddr_in serv_addr = {0};
    
     // Création de la socket serveur
@@ -52,35 +59,40 @@ void receivefile(char *file){
     int pid = 0;
     // Accepte la connexion d'une socket client
     connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
-   // recv(connfd, file, 48000, 0);
    
     printf("\n connected  \n");
+    //reception du buffer contenant le script du fichier envoyé par le maitre
     recv(connfd, file, 48000, 0);
     printf("\n here : %s", file);
+    //ouverture du fichier et écriture dans celui-ci du contenu du buffer
     FILE *fi = NULL;
     fi = fopen("script.sh","w+");
     fprintf(fi,"%s",file);
     fclose(fi);
+
     printf("\n bg \n");
+    //execution du script
     system("~/projet_application/projet_application/script.sh");
+    //Envoie du résultat du script vers le serveur
     bzero(file, 48000);
-    char *file1=loadfile("taille.txt", file);  
+    //chargement du contenu fichier résultat dans le buffer
+    char *file1=loadfile("taille.txt", file);
+    //Envoie du buffer avec la fonction send  
     if(send(connfd, file1, strlen(file1), 0)==-1){
 	perror("error sending file");
 	exit(1);
 	}
+
     printf("\n Yes \n");
-=======
-int main()
-{
-    
-    read_ip();
-       
->>>>>>> parent of fc351bf (Merge branch 'main' of https://github.com/thibaudcty/projet_application):client - Copie.c
+    //fermeture des sockets listenfd et connfd
+    shutdown(connfd,2);
+    shutdown(listenfd,2);
+    close(connfd);
+    close(listenfd);
 }
 
 
-
+//fonction pour récupérer l'adresse ip de la machine
 
 char* getadresse(){
         //create an ifreq struct for passing data in and out of ioctl
@@ -145,9 +157,19 @@ char* getadresse(){
       return inet_ntoa(ipaddress->sin_addr);
 }
 
+//fonction pour envoyer l'adresse ip du client au serveur
+void inscrire(int fd){
+     char* ip=getadresse();
+     char buffer[1024];
+     send(fd, ip, strlen(ip),0);
+ }
 
-void read_ip(int argc, char *argv[]){
-    char sendBuff[1024] = {0};
+
+int main(int argc, char *argv[]){
+   
+    char *file[48000];
+    bzero(file, 48000);
+    char recvBuff[1024]={0};
     int sockfd=0;
     int n=0;
     struct sockaddr_in serv_addr = {0};
@@ -167,7 +189,7 @@ void read_ip(int argc, char *argv[]){
         printf("\n Error : Could not create socket \n");
         return 1;
     }
-    
+    memset((char *)&serv_addr,0,sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     // Le port sur lequel écoute le serveur
     serv_addr.sin_port = htons(7000);
@@ -185,32 +207,25 @@ void read_ip(int argc, char *argv[]){
         printf("\n Error : Connect Failed \n");
         return 1;
     }
+    //Enregistrement des données du serveur dans un fichier
+    FILE*  fichier = fopen("ServerList.txt", "w");
+    fprintf(fichier, "adresse du serveur : %s", argv[1]); 
+    fclose(fichier);
+    //Appel de la fonction inscrire pour envoyer l'adresse ip du client au serveur
     inscrire(sockfd);
-   
-        FILE* fichier = NULL;
- 
-        fichier = fopen("ServerList.txt", "a");
- 
-        if (fichier != NULL)
-            {
-            fprintf(fichier, "\n");
-            fprintf(fichier,"addresse du server:%s", sendBuff);
-	    
-            fclose(fichier);
-            }
-    }
-
+    //Fermeture de sockfd 
+    shutdown(sockfd,2);
+    close(sockfd);
+    //Appel de la fonction receivefile pour la récupération du script et son éxecution
+    receivefile(file);
     if(n < 0)
     {
         printf("\n Read error \n");
-    }
-    return 0;	   
+    }	
+    
+    return 0;
  }
- void inscrire(int fd){
-     char* ip=getadresse();
-     char buffer[1024];
-     send(fd, ip, strlen(ip),0);
- }
+ 
 
 
 
