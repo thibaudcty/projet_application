@@ -23,7 +23,7 @@ char* loadfile(char *name, char* file){
 		i++;
 	}
 
-	printf("ici: %s \n", file);
+	printf("Le script à envoyer: %s \n", file);
 	fclose(f);
 	 
 
@@ -63,7 +63,7 @@ int sendfile(char* ip, char* file){
         printf("\n Error : Connect Failed \n");
         return 1;
     }
-    printf(" \n connected \n");
+    printf(" \n Connected \n");
     
     //Envoie du buffer contenu du fichier contenant le script à l'aide de la fonction send
     if(send(sockfd, file, strlen(file), 0)==-1){
@@ -78,7 +78,7 @@ int sendfile(char* ip, char* file){
     fprintf(filo,"%s", file);
     fclose(filo);
 
-    printf("\ hola \n");
+    printf("\ le résulat a été bien stocké dans le fichier\n");
     //fermeture de sockfd
     shutdown(sockfd,2);
     close(sockfd);
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 		
 	bzero(recvBuff,1025);
 	recv(connfd,recvBuff,1025,0);
-	printf("\n hfhfh : %s\n ", recvBuff);
+	printf("\n Confirmation de récupération da l'adresse Ip du Client----> %s\n ", recvBuff);
 
 	// debut de la procédure de vérification  du nom de l'utilisateur
 
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
 	strncpy(cmpme," ",sizeof(" ")+1);
 	strncat(cmpme,recvBuff,sizeof(recvBuff)+1);
 	strncat(cmpme," ",sizeof(" ")+1);
-	printf("\non cherche a savoir si le nom d'utilisateur %s est dans le fichier :)\n",cmpme);
+	//printf("\n On cherche a savoir si le nom d'utilisateur %s est dans le fichier :)\n",cmpme);
 
 	
 	char line[bufferLength];
@@ -151,13 +151,13 @@ int main(int argc, char *argv[])
 	fclose(filePointer);
 	if (wordExist==1)
 	{
-		printf(" \n L'utilisateur existe déjà :'( bye bye \n");
+		printf(" \n L'utilisateur existe déjà !!\n");
         
         
 	}
 	else 
 	{
-		printf(" \n L'utilisateur ne s'est jamais connecté :). \n");
+		printf(" \n Première connection du client \n");
 		FILE *fichier= fopen("ClientsList.txt", "a");
 		fprintf(fichier, "adresse du client: %s \n", recvBuff);
 	}

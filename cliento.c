@@ -13,7 +13,7 @@
 #include <linux/if.h>
 
 
-//fonction pour stocker les données d'un fichier dans un buffer
+//fonction pour stocker le contenu d'un fichier dans un buffer
 char* loadfile(char *name, char* file){
 	
 	int i=0;
@@ -27,7 +27,7 @@ char* loadfile(char *name, char* file){
 		i++;
 	}
 
-	printf("ici: %s \n", file);
+	printf(" \n le Résultat d'exécution: \n %s \n", file);
 	fclose(f);
 	 
 
@@ -36,7 +36,7 @@ char* loadfile(char *name, char* file){
 }
 
 
-//fonction pour recevoir le fichier script depuis le serveur
+//fonction pour recevoir le fichier contenant le script depuis le serveur
 void receivefile(char *file){
    
     int listenfd=0 ;
@@ -60,17 +60,17 @@ void receivefile(char *file){
     // Accepte la connexion d'une socket client
     connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
    
-    printf("\n connected  \n");
+    printf("\n Connected  \n");
     //reception du buffer contenant le script du fichier envoyé par le maitre
     recv(connfd, file, 48000, 0);
-    printf("\n here : %s", file);
+    printf("\n Le contenu du buffer reçu  :\n %s", file);
     //ouverture du fichier et écriture dans celui-ci du contenu du buffer
     FILE *fi = NULL;
     fi = fopen("script.sh","w+");
     fprintf(fi,"%s",file);
     fclose(fi);
 
-    printf("\n bg \n");
+    printf("\n Le script a été bien stocké dans le fichier \n");
     //execution du script
     system("~/projet_application/projet_application/script.sh");
     //Envoie du résultat du script vers le serveur
@@ -83,7 +83,7 @@ void receivefile(char *file){
 	exit(1);
 	}
 
-    printf("\n Yes \n");
+    printf("\n Le résultat a été bien envoyé au serveur \n");
     //fermeture des sockets listenfd et connfd
     shutdown(connfd,2);
     shutdown(listenfd,2);
@@ -153,7 +153,7 @@ char* getadresse(){
         /* *** Cast the returned address to a struct 'sockaddr_in' *** */
         struct sockaddr_in * ipaddress= (struct sockaddr_in *)&my_struct.ifr_addr;
        /* *** Extract the 'sin_addr' field from the data type (struct) to obtain a struct 'in_addr' *** */
-      printf("IP Address is %s.\n", inet_ntoa(ipaddress->sin_addr));
+      printf("Adresse IP de la machine %s.\n", inet_ntoa(ipaddress->sin_addr));
       return inet_ntoa(ipaddress->sin_addr);
 }
 
@@ -209,7 +209,7 @@ int main(int argc, char *argv[]){
     }
     //Enregistrement des données du serveur dans un fichier
     FILE*  fichier = fopen("ServerList.txt", "w");
-    fprintf(fichier, "adresse du serveur : %s", argv[1]); 
+    fprintf(fichier, "Adresse du serveur : %s", argv[1]); 
     fclose(fichier);
     //Appel de la fonction inscrire pour envoyer l'adresse ip du client au serveur
     inscrire(sockfd);
