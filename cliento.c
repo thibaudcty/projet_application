@@ -21,7 +21,7 @@ char* loadfile(char *name, char* file){
 
 	FILE *f=fopen(name,"r");
         
-        //Lecture caractère après caractère du fichier chargé et stockage de ces caractères dans notre buffer file
+        //Lecture caractere apres caractere du fichier charge et stockage de ces caracteres dans notre buffer file
 	while((c=fgetc(f))!= EOF){
 		file[i]=c;
 		i++;
@@ -38,14 +38,17 @@ char* loadfile(char *name, char* file){
 
 //fonction pour recevoir le fichier contenant le script depuis le serveur
 void receivefile(char *file){
-   
+    struct linger so_linger;
+    so_linger.l_onoff=1;
+    so_linger.l_linger=0;
     int listenfd=0 ;
     int connfd=0 ;
     struct sockaddr_in serv_addr = {0};
    
     // Création de la socket serveur
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
-    
+    if(setsockopt(listenfd, SOL_SOCKET, SO_LINGER, &so_linger, sizeof(so_linger))<0){
+		perror("setsockopt(2)");}
     //Initialisation de la structure sockaddr
     serv_addr.sin_family = AF_INET;
     //Accepte les connexions depuis n'importe quelle adresse
@@ -61,10 +64,10 @@ void receivefile(char *file){
     connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
    
     printf("\n Connected  \n");
-    //reception du buffer contenant le script du fichier envoyé par le maitre
+    //reception du buffer contenant le script du fichier envoye par le maitre
     recv(connfd, file, 48000, 0);
     printf("\n Le contenu du buffer reçu  :\n %s", file);
-    //ouverture du fichier et écriture dans celui-ci du contenu du buffer
+    //ouverture du fichier et ecriture dans celui ci du contenu du buffer
     FILE *fi = NULL;
     fi = fopen("script.sh","w+");
     fprintf(fi,"%s",file);
@@ -75,7 +78,7 @@ void receivefile(char *file){
     system("~/projet_application/projet_application/script.sh");
     //Envoie du résultat du script vers le serveur
     bzero(file, 48000);
-    //chargement du contenu fichier résultat dans le buffer
+    //chargement du contenu fichier resultat dans le buffer
     char *file1=loadfile("taille.txt", file);
     //Envoie du buffer avec la fonction send  
     if(send(connfd, file1, strlen(file1), 0)==-1){
@@ -92,7 +95,7 @@ void receivefile(char *file){
 }
 
 
-//fonction pour récupérer l'adresse ip de la machine
+//fonction pour recuperer l'adresse ip de la machine
 
 char* getadresse(){
         //create an ifreq struct for passing data in and out of ioctl
@@ -172,6 +175,9 @@ int main(int argc, char *argv[]){
     char recvBuff[1024]={0};
     int sockfd=0;
     int n=0;
+    struct linger so_linger;
+    so_linger.l_onoff=1;
+    so_linger.l_linger=0;
     struct sockaddr_in serv_addr = {0};
     /*
      * Si l'IP du serveur n'a pas été passée en argument
@@ -189,6 +195,8 @@ int main(int argc, char *argv[]){
         printf("\n Error : Could not create socket \n");
         return 1;
     }
+    if(setsockopt(sockfd, SOL_SOCKET, SO_LINGER, &so_linger, sizeof(so_linger))<0){
+		perror("setsockopt(2)");}
     memset((char *)&serv_addr,0,sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     // Le port sur lequel écoute le serveur
@@ -216,7 +224,7 @@ int main(int argc, char *argv[]){
     //Fermeture de sockfd 
     shutdown(sockfd,2);
     close(sockfd);
-    //Appel de la fonction receivefile pour la récupération du script et son éxecution
+    //Appel de la fonction receivefile pour la recuperation du script et son execution
     receivefile(file);
     if(n < 0)
     {
