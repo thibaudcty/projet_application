@@ -60,38 +60,42 @@ void receivefile(char *file){
     //La socket écoute pour des connexions
     listen(listenfd, 10);
     int pid = 0;
-    // Accepte la connexion d'une socket client
-    connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
-   
-    printf("\n Connected  \n");
-    //reception du buffer contenant le script du fichier envoye par le maitre
-    recv(connfd, file, 48000, 0);
-    printf("\n Le contenu du buffer reçu  :\n %s", file);
-    //ouverture du fichier et ecriture dans celui ci du contenu du buffer
-    FILE *fi = NULL;
-    fi = fopen("script.sh","w+");
-    fprintf(fi,"%s",file);
-    fclose(fi);
+    while(1){
+    	    // Accepte la connexion d'une socket client
+	    connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
+	   
+	    printf("\n Connected  \n");
 
-    printf("\n Le script a été bien stocké dans le fichier \n");
-    //execution du script
-    system("~/projet_application/projet_application/script.sh");
-    //Envoie du résultat du script vers le serveur
-    bzero(file, 48000);
-    //chargement du contenu fichier resultat dans le buffer
-    char *file1=loadfile("taille.txt", file);
-    //Envoie du buffer avec la fonction send  
-    if(send(connfd, file1, strlen(file1), 0)==-1){
-	perror("error sending file");
-	exit(1);
+
+	    //reception du buffer contenant le script du fichier envoye par le maitre
+	    recv(connfd, file, 48000, 0);
+	    printf("\n Le contenu du buffer reçu  :\n %s", file);
+	    //ouverture du fichier et ecriture dans celui ci du contenu du buffer
+	    FILE *fi = NULL;
+	    fi = fopen("script.sh","w+");
+	    fprintf(fi,"%s",file);
+	    fclose(fi);
+
+	    printf("\n Le script a été bien stocké dans le fichier \n");
+	    //execution du script
+	    system("~/projet_application/projet_application/script.sh");
+	    //Envoie du résultat du script vers le serveur
+	    bzero(file, 48000);
+	    //chargement du contenu fichier resultat dans le buffer
+	    char *file1=loadfile("taille.txt", file);
+	    //Envoie du buffer avec la fonction send  
+	    if(send(connfd, file1, strlen(file1), 0)==-1){
+		perror("error sending file");
+		exit(1);
+		}
+
+	    printf("\n Le résultat a été bien envoyé au serveur \n");
+	    //fermeture des sockets listenfd et connfd
+	    shutdown(connfd,2);
+	  
+	    close(connfd);
+	   
 	}
-
-    printf("\n Le résultat a été bien envoyé au serveur \n");
-    //fermeture des sockets listenfd et connfd
-    shutdown(connfd,2);
-    shutdown(listenfd,2);
-    close(connfd);
-    close(listenfd);
 }
 
 
@@ -217,7 +221,7 @@ int main(int argc, char *argv[]){
     }
     //Enregistrement des données du serveur dans un fichier
     FILE*  fichier = fopen("ServerList.txt", "w");
-    fprintf(fichier, "Adresse du serveur : %s", argv[1]); 
+    fprintf(fichier, "Adresse du serveur :%s \n", argv[1]); 
     fclose(fichier);
     //Appel de la fonction inscrire pour envoyer l'adresse ip du client au serveur
     inscrire(sockfd);
