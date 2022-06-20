@@ -76,7 +76,7 @@ int sendfile(char* ip, char* file){
     
     //Envoie du buffer contenu du fichier contenant le script à l'aide de la fonction send
     if(send(sockfd, file, strlen(file), 0)==-1){
-	perror("error sending file");
+	perror("\nerror sending file\n");
 	exit(1);
 	}
     //Reception du resultat du fichier execute par le client
@@ -96,7 +96,7 @@ int sendfile(char* ip, char* file){
 
 void inscription(int fd){
 			
-	
+	bzero(Buff,1025);
 	recv(fd,Buff,1025,0);
 	printf("\n Confirmation de récupération da l'adresse Ip du Client----> %s\n ", Buff);
 
@@ -183,8 +183,9 @@ int main(int argc, char *argv[])
 	int num;
 	char* file1;
         int n;
+        recv(connfd,Buff,1025,0);
         while(1){
-		printf("\n3chiri khtar chi option men hado :\n 1. Inscrire le client\n 2. Envoyer un script \n 3. Exit\n");
+		printf("\n Choix d'option :\n 1. Inscrire le client\n 2. Envoyer un script \n 3. Exit\n");
 		scanf("%d",&num);
 		switch (num){
 		case 1:
@@ -193,12 +194,13 @@ int main(int argc, char *argv[])
 
 			break;
 		case 2:
-			printf("\n3chiri khtar chi script men hado :\n 1. taboun\n 2. script.sh \n 3. 7alwa\n");
+                        
+			printf("\n Choix de script :\n 1. script1.sh\n 2. script2.sh \n 3. script3.sh\n");
 		        scanf("%d",&n);
 			switch(n){
 				case 1:
 					//Chargement du contenu du fichier contenant le script a executer dans un buffer a l'aide de la fonction loadfile
-					file1=loadfile("taboun.sh", file);
+					file1=loadfile("script1.sh", file);
 					//Appel de la fonction sendfile pour l'envoi du buffer a l'adresse ip du client stocke dans le recvBuff
 					sendfile(Buff, file1); 
 					break;
@@ -206,24 +208,25 @@ int main(int argc, char *argv[])
 					//Chargement du contenu du fichier contenant le script a executer dans un buffer a l'aide de la fonction loadfile
 					file1=loadfile("script.sh", file);
 					//Appel de la fonction sendfile pour l'envoi du buffer a l'adresse ip du client stocke dans le recvBuff
+                                        
 					sendfile(Buff, file1); 
 					break;
 				case 3:
 					//Chargement du contenu du fichier contenant le script a executer dans un buffer a l'aide de la fonction loadfile
-					file1=loadfile("7alwa.sh", file);
+					file1=loadfile("script3.sh", file);
 					//Appel de la fonction sendfile pour l'envoi du buffer a l'adresse ip du client stocke dans le recvBuff
 					sendfile(Buff, file1); 
 					break;
 				default:
-					printf("\nwach mo3a9 rah kayn gha 3 choix\n");
+					printf("\ny a que c'est 3 choix\n");
 					break;}
                         break;
 			
 		case 3: 
-			printf("\nsir t7awa\n");
+			printf("\n a dios\n");
 			exit(0);
 		default:
-			printf("\nhhhhh 9awedtiha werek mzn\n");
+			printf("\n y a que 1, 2 et 3 hhh \n");
 			break;
 		} 
 		
