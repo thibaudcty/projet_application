@@ -11,7 +11,7 @@
 
 
 char Buff[1025]={0};
-//fonction pour stocker le contenu d'un fichier dans un buffer
+//fonction pour stocker le contenu d'un fichier dans un buffer ha
 char* loadfile(char *name, char* file){
 	
 	int i=0;
