@@ -64,7 +64,7 @@ int sendfile(char* ip, char* file){
         return 1;
     }
     
-    // Connection au serveur
+    // Connection au client
     if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
         printf("\n Error : Connect Failed \n");
@@ -92,13 +92,63 @@ int sendfile(char* ip, char* file){
     return 0;
 }
 
+void inscription(int fd,  char* Buff){
+			
+	bzero(Buff,1025);
+	recv(fd,Buff,1025,0);
+	printf("\n Confirmation de récupération da l'adresse Ip du Client----> %s\n ", Buff);
 
+	// debut de la procedure de verification  du nom de l'utilisateur
 
+	FILE* filePointer;
+        int wordExist=0;
+	int bufferLength = 255;
+	//char search[100] = recvBuff;
+	
+	char cmpme[128];
+	strncpy(cmpme," ",sizeof(" ")+1);
+	strncat(cmpme,Buff,sizeof(Buff)+1);
+	strncat(cmpme," ",sizeof(" ")+1);
+	printf("\n On cherche a savoir si le nom d'utilisateur %s est dans le fichier :)\n",cmpme);
+
+	
+	char line[bufferLength];
+	filePointer = fopen("ClientsList.txt", "r");
+	while(fgets(line, bufferLength, filePointer))
+	{
+		char *ptr = strstr(line, cmpme);
+		if (ptr != NULL) 
+		{
+			wordExist=1;
+			break;
+		}
+	}
+	fclose(filePointer);
+	if (wordExist==1)
+	{
+		printf(" \n L'utilisateur existe déjà :'( bye bye \n");
+        
+        
+	}
+	else 
+	{
+		printf(" \n Premiere connection du client \n");
+		FILE *fichier= fopen("ClientsList.txt", "a");
+		fprintf(fichier, "adresse du client: %s \n", Buff);
+	}
+    	// fin de la procedure de verification  du nom de l'utilisateur
+
+	//femeture des sockets connfd et listenfd
+	shutdown(fd, 2);
+        close(fd);
+	
+	
+}
 int main(int argc, char *argv[])
 {
 	char file[48000];
 	bzero(file, 48000);
-	int listenfd=0;
+        int listenfd=0;
 	int connfd=0;
 	struct sockaddr_in serv_addr = {0};
 	// Le buffer pour envoyer les données
@@ -128,64 +178,24 @@ int main(int argc, char *argv[])
 		
 	connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
 		
-		
-	bzero(recvBuff,1025);
-	recv(connfd,recvBuff,1025,0);
-	printf("\n Confirmation de récupération da l'adresse Ip du Client----> %s\n ", recvBuff);
-
-	// debut de la procedure de verification  du nom de l'utilisateur
-
-	FILE* filePointer;
-        int wordExist=0;
-	int bufferLength = 255;
-	//char search[100] = recvBuff;
-	
-	char cmpme[128];
-	strncpy(cmpme," ",sizeof(" ")+1);
-	strncat(cmpme,recvBuff,sizeof(recvBuff)+1);
-	strncat(cmpme," ",sizeof(" ")+1);
-	printf("\n On cherche a savoir si le nom d'utilisateur %s est dans le fichier :)\n",cmpme);
-
-	
-	char line[bufferLength];
-	filePointer = fopen("ClientsList.txt", "r");
-	while(fgets(line, bufferLength, filePointer))
-	{
-		char *ptr = strstr(line, cmpme);
-		if (ptr != NULL) 
-		{
-			wordExist=1;
-			break;
-		}
-	}
-	fclose(filePointer);
-	if (wordExist==1)
-	{
-		printf(" \n L'utilisateur existe déjà :'( bye bye \n");
-        
-        
-	}
-	else 
-	{
-		printf(" \n Premiere connection du client \n");
-		FILE *fichier= fopen("ClientsList.txt", "a");
-		fprintf(fichier, "adresse du client: %s \n", recvBuff);
-	}
-    	// fin de la procedure de verification  du nom de l'utilisateur
-
-	//femeture des sockets connfd et listenfd
-	shutdown(connfd, 2);
-	shutdown(listenfd,2);
-	
-
-        close(connfd);
-	close(listenfd);
-	//Chargement du contenu du fichier contenant le script a executer dans un buffer a l'aide de la fonction loadfile
-	char *file1=loadfile("script.sh", file);
-	//Appel de la fonction sendfile pour l'envoi du buffer a l'adresse ip du client stocke dans le recvBuff
-        sendfile(recvBuff, file1); 
-        
-        
+	int num;
+	printf("\n3chiri khtar chi option men hado :\n 1. Inscrire le client\n 2. Envoyer un script\n");
+	scanf("%d",num);
+	switch (num){
+	case 1:
+		//Appel de la fonction d'inscription
+		inscription(connfd, recvBuff);
+		break;
+	case 2:
+		//Chargement du contenu du fichier contenant le script a executer dans un buffer a l'aide de la fonction loadfile
+		char *file1=loadfile("script.sh", file);
+		//Appel de la fonction sendfile pour l'envoi du buffer a l'adresse ip du client stocke dans le recvBuff
+		sendfile(recvBuff, file1); 
+		break;
+	default:
+		printf("\nsir t7awa\n");
+		break;
+	} 
     
 }
 
