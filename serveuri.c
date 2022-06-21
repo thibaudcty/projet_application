@@ -10,7 +10,7 @@
 #include <time.h>
 
 
-char Buff[1025]={0};
+char Buff[1025];
 //fonction pour stocker le contenu d'un fichier dans un buffer ha
 char* loadfile(char *name, char* file){
 	
@@ -80,7 +80,7 @@ int sendfile(char* ip, char* file){
 	exit(1);
 	}
     //Reception du resultat du fichier execute par le client
-    
+    bzero(file, 48000);
     recv(sockfd, file, 48000, 0);
     //Stockage du resultat dans le fichier taille.txt
     FILE *filo=fopen("taille.txt","w");
@@ -146,8 +146,7 @@ void inscription(int fd){
 	
 	
 }
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
 	char file[48000];
 	bzero(file, 48000);
         int listenfd=0;
@@ -200,13 +199,13 @@ int main(int argc, char *argv[])
 			switch(n){
 				case 1:
 					//Chargement du contenu du fichier contenant le script a executer dans un buffer a l'aide de la fonction loadfile
-					file1=loadfile("script1.sh", file);
+					file1=loadfile("script.sh", file);
 					//Appel de la fonction sendfile pour l'envoi du buffer a l'adresse ip du client stocke dans le recvBuff
 					sendfile(Buff, file1); 
 					break;
                         	case 2:
 					//Chargement du contenu du fichier contenant le script a executer dans un buffer a l'aide de la fonction loadfile
-					file1=loadfile("script.sh", file);
+					file1=loadfile("script2.sh", file);
 					//Appel de la fonction sendfile pour l'envoi du buffer a l'adresse ip du client stocke dans le recvBuff
                                         
 					sendfile(Buff, file1); 
@@ -230,6 +229,5 @@ int main(int argc, char *argv[])
 			break;
 		} 
 		
-    }
-}
+    }}
 

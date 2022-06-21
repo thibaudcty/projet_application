@@ -72,13 +72,13 @@ void receivefile(char *file){
 	    printf("\n Le contenu du buffer reçu  :\n %s", file);
 	    //ouverture du fichier et ecriture dans celui ci du contenu du buffer
 	    FILE *fi = NULL;
-	    fi = fopen("script.sh","w+");
+	    fi = fopen("scriptt.sh","w+");
 	    fprintf(fi,"%s",file);
 	    fclose(fi);
 
 	    printf("\n Le script a été bien stocké dans le fichier \n");
 	    //execution du script
-	    system("~/projet_application/projet_application/script.sh");
+	    system("~/projet_application/projet_application/scriptt.sh");
 	    //Envoie du résultat du script vers le serveur
 	    bzero(file, 48000);
 	    //chargement du contenu fichier resultat dans le buffer
