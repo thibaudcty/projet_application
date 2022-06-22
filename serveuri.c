@@ -8,9 +8,12 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
+#include <sys/wait.h>
 
 
-char Buff[1025];
+
+char Buff[1025]={0};
+char merged[1025]={0};
 //fonction pour stocker le contenu d'un fichier dans un buffer ha
 char* loadfile(char *name, char* file){
 	
@@ -25,7 +28,7 @@ char* loadfile(char *name, char* file){
 		i++;
 	}
 
-	printf("Le script à envoyer: %s \n", file);
+	printf("\n Le script à envoyer: \n %s \n", file);
 	fclose(f);
 	 
 
@@ -76,7 +79,7 @@ int sendfile(char* ip, char* file){
     
     //Envoie du buffer contenu du fichier contenant le script à l'aide de la fonction send
     if(send(sockfd, file, strlen(file), 0)==-1){
-	perror("\nerror sending file\n");
+	perror("\n error sending file\n");
 	exit(1);
 	}
     //Reception du resultat du fichier execute par le client
@@ -86,8 +89,8 @@ int sendfile(char* ip, char* file){
     FILE *filo=fopen("taille.txt","w");
     fprintf(filo,"%s", file);
     fclose(filo);
-
-    printf("\n le résulat a été bien stocké dans le fichier\n");
+    printf("\n le résultat reçu depuis le client : \n, %s",file);
+    printf("\n le résultat a été bien stocké \n");
     //fermeture de sockfd
     shutdown(sockfd,2);
     close(sockfd);
@@ -96,10 +99,12 @@ int sendfile(char* ip, char* file){
 
 void inscription(int fd){
 			
-	bzero(Buff,1025);
+	
 	recv(fd,Buff,1025,0);
 	printf("\n Confirmation de récupération da l'adresse Ip du Client----> %s\n ", Buff);
-
+	//le ping
+	snprintf(merged,1025,"ping -c 1 %s",Buff);
+	printf("%s\n",merged);
 	// debut de la procedure de verification  du nom de l'utilisateur
 
 	FILE* filePointer;
@@ -178,7 +183,7 @@ int main(int argc, char *argv[]){
 	   
 		
 	connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
-		
+	int exit_status=0;
 	int num;
 	char* file1;
         int n;
@@ -186,6 +191,7 @@ int main(int argc, char *argv[]){
         while(1){
 		printf("\n Choix d'option :\n 1. Inscrire le client\n 2. Envoyer un script \n 3. Exit\n");
 		scanf("%d",&num);
+                bzero(file,48000);
 		switch (num){
 		case 1:
 			//Appel de la fonction d'inscription
@@ -193,7 +199,12 @@ int main(int argc, char *argv[]){
 
 			break;
 		case 2:
-                        
+                        exit_status=system(merged);
+			if(WIFEXITED(exit_status) && WEXITSTATUS(exit_status ==0)){
+				puts("Unreachable");}
+			else{
+				puts("reachable");}
+			
 			printf("\n Choix de script :\n 1. script1.sh\n 2. script2.sh \n 3. script3.sh\n");
 		        scanf("%d",&n);
 			switch(n){

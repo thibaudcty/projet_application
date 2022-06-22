@@ -66,7 +66,7 @@ void receivefile(char *file){
 	   
 	    printf("\n Connected  \n");
 
-
+            bzero(file,48000);
 	    //reception du buffer contenant le script du fichier envoye par le maitre
 	    recv(connfd, file, 48000, 0);
 	    printf("\n Le contenu du buffer reçu  :\n %s", file);
