@@ -193,7 +193,8 @@ int main(int argc, char *argv[]){
 	char* file1;
         int n;
         recv(connfd,Buff,1025,0);
-        while(1){
+        inscription(connfd);
+      /*  while(1){
 		printf("\n Choix d'option :\n 1. Inscrire le client\n 2. Envoyer un script \n 3. Exit\n");
 		scanf("%d",&num);
                 bzero(file,48000);
@@ -251,5 +252,5 @@ int main(int argc, char *argv[]){
 			break;
 		} 
 		
-    }}
+    }*/}
 
