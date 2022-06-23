@@ -12,7 +12,7 @@
 
 
 
-char Buff[1025]={0};
+char Buff[1025];
 char merged[1025]={0};
 //fonction pour stocker le contenu d'un fichier dans un buffer ha
 char* loadfile(char *name, char* file){
@@ -99,12 +99,10 @@ int sendfile(char* ip, char* file){
 
 void inscription(int fd){
 			
-	
+        
 	recv(fd,Buff,1025,0);
 	printf("\n Confirmation de récupération da l'adresse Ip du Client----> %s\n ", Buff);
-	//le ping
-	snprintf(merged,1025,"ping -c 1 %s",Buff);
-	printf("%s\n",merged);
+	
 	// debut de la procedure de verification  du nom de l'utilisateur
 
 	FILE* filePointer;
@@ -199,6 +197,9 @@ int main(int argc, char *argv[]){
 
 			break;
 		case 2:
+			//le ping
+			snprintf(merged,1025,"ping -c 1 %s", Buff);
+			printf("%s\n",merged);
                         exit_status=system(merged);
 			if(WIFEXITED(exit_status) && WEXITSTATUS(exit_status ==0)){
 				puts("Unreachable");}
