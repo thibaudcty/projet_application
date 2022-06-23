@@ -42,14 +42,14 @@ gchar *text = "Résultat du scan : ";
   gtk_window_set_title(GTK_WINDOW(window), "GtkTextView");
 
   vbox = gtk_box_new(FALSE, 0);
-  view = gtk_text_view_new();
+  view = gtk_text_view_scroll_to_mark();
   gtk_box_pack_start(GTK_BOX(vbox), view, TRUE, TRUE, 0);
 
   buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
-
+//---------------------------------------------
   gtk_text_buffer_create_tag(buffer, "gap",
         "pixels_above_lines", 30, NULL);
-/*
+
   gtk_text_buffer_create_tag(buffer, "lmarg", 
       "left_margin", 5, NULL);
   gtk_text_buffer_create_tag(buffer, "blue_fg", 
@@ -60,9 +60,11 @@ gchar *text = "Résultat du scan : ";
       "style", PANGO_STYLE_ITALIC, NULL);
   gtk_text_buffer_create_tag(buffer, "bold", 
       "weight", PANGO_WEIGHT_BOLD, NULL);
-*/
+//------------------------------------------------
+
   gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
 
+//--------------------------------------------------
   gtk_text_buffer_insert(buffer, &iter, "Plain text\n", -1);
   gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, 
         "Colored Text\n", -1, "blue_fg", "lmarg",  NULL);
@@ -74,9 +76,10 @@ gchar *text = "Résultat du scan : ";
 
   gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, 
         g_strdup_printf("%s\n",text2), -1, "bold", "lmarg",  NULL);
-
+//--------------------------------------------------
   gtk_container_add(GTK_CONTAINER(window), vbox);
 
+//--------------------------------------------------
   g_signal_connect(G_OBJECT(window), "destroy",
         G_CALLBACK(gtk_main_quit), NULL);
 

@@ -1,8 +1,9 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "serveuri.h"
 
-void button_clicked(GtkWidget *widget, gpointer data){
+void button_clicked1(GtkWidget *widget, gpointer data){
 	g_print("button clicked \n");
 	FILE* demo;
     /*
@@ -25,7 +26,12 @@ void button_clicked(GtkWidget *widget, gpointer data){
                  command );
     }
    }
-    
+
+void button_clicked2(GtkWidget *widget, gpointer data){
+	g_print("button clicked \n");
+
+    }
+   }
  
 
 
@@ -57,10 +63,11 @@ label = gtk_label_new("Bienvenue dans notre application :)");
 label2 = gtk_label_new("Veuillez choisir le client :");
 label3 = gtk_label_new("Ajout/Refus de clients : ");
 
-g_signal_connect(button2, "clicked", G_CALLBACK(button_clicked),NULL);
+g_signal_connect(button2, "clicked2", G_CALLBACK(button_clicked),NULL);
 
 gtk_fixed_put(GTK_FIXED(fixed), button1, 100, 200);
 gtk_fixed_put(GTK_FIXED(fixed), button2, 200, 200);
+int k = 5;
 gtk_fixed_put(GTK_FIXED(fixed), button3, 100, 400);
 gtk_fixed_put(GTK_FIXED(fixed), label, 80, 20);
 gtk_fixed_put(GTK_FIXED(fixed), label2, 80, 70);

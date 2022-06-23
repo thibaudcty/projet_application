@@ -1,9 +1,10 @@
 #include <gtk/gtk.h>
+#include "serveuri.h"
 
 void button_clicked(GtkWidget *widget, gpointer window){
 	g_print("button clicked \n");
 	FILE* demo;
-	gtk_close_window(window);
+	
      const char * command = " ^C "; 
      int cr = system( command );
      if ( cr != 0 ) {
@@ -29,6 +30,7 @@ GtkWidget *button2;
 GtkWidget *button3;
 GtkWidget *button4;
 GtkWidget *button5;
+GtkWidget *button6;
 GtkWidget *label;
 GtkWidget *label2;
 GtkWidget *label3;
@@ -39,8 +41,9 @@ gtk_window_set_default_size(GTK_WINDOW(window), 500, 500);
 
 
 fixed = gtk_fixed_new();
-button1 = gtk_button_new_with_label("scan 1: état de la mémoire");
+button1 = gtk_button_new_with_label("Script 1: état de la mémoire");
 button2 = gtk_button_new_with_label("Scan 2: wazaa");
+button6 = gtk_button_new_with_label("Scan 2: bip bip boup");
 button3 = gtk_button_new_with_label("stopper la connexion");
 button4 = gtk_button_new_with_label("mettre en pause");
 button5 = gtk_button_new_with_label("retrour à l'acceuil");
@@ -50,14 +53,16 @@ label3 = gtk_label_new("Résultat du scan :");
 
 g_signal_connect(button5, "clicked", G_CALLBACK(button_clicked),NULL);
 
-gtk_fixed_put(GTK_FIXED(fixed), button1, 100, 90);
-gtk_fixed_put(GTK_FIXED(fixed), button2, 333, 90);
+gtk_fixed_put(GTK_FIXED(fixed), button1, 125, 90);
+gtk_fixed_put(GTK_FIXED(fixed), button2, 250, 90);
+gtk_fixed_put(GTK_FIXED(fixed), button6, 375, 90);
 gtk_fixed_put(GTK_FIXED(fixed), label, 140, 20);
 gtk_fixed_put(GTK_FIXED(fixed), label2, 80, 60);
 gtk_fixed_put(GTK_FIXED(fixed), label3, 80, 150);
 gtk_fixed_put(GTK_FIXED(fixed), button3, 100, 350);
 gtk_fixed_put(GTK_FIXED(fixed), button4, 333, 350);
 gtk_fixed_put(GTK_FIXED(fixed), button5, 450, 480);
+
 
 //gtk_fixed_move(GTK_FIXED(fixed), button1, 200,100);
 //gtk_fixed_move(GTK_FIXED(fixed), button2, 350,205);

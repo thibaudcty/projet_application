@@ -65,6 +65,8 @@ GtkWidget *button2;
 GtkWidget *label; 
 GtkWidget *textview;
 GtkTextBuffer *textbuffer;
+
+gchar *text3 = "wazaaaaaa ";
  
 window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 gtk_window_set_title(GTK_WINDOW(window), "GUI du projet d'application euromed");

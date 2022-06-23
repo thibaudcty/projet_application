@@ -1,4 +1,4 @@
-PROG = test2
+PROG = page_acceuil_unique
 
 CC = gcc
 CFLAGS = `pkg-config --cflags gtk+-3.0`

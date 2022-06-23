@@ -35,7 +35,18 @@ char* loadfile(char *name, char* file){
 
 	return file;	
 }
+void showresult(){
+ 
+ printf("\n Ensemble des srésultats des scripts reçu : \n");
+    FILE *f;
+    char c;
+    f=fopen("resultat.txt","rt");
+    while((c=fgetc(f))!=EOF){
+        printf("%c",c);
+    }
+    fclose(f);
 
+}
 //fonction pour envoyer le fichier contenant le script au client
 int sendfile(char* ip, char* file){
     
@@ -97,7 +108,11 @@ int sendfile(char* ip, char* file){
     fprintf(filo,"%s", file);
     fclose(filo);
     printf("\n le résultat reçu depuis le client : \n, %s",file);
-    printf("\n le résultat a été bien stocké \n");}
+    printf("\n le résultat a été bien stocké \n");
+    FILE *fila=fopen("resultat.txt","a");
+    fprintf(fila,"%s", file);
+    fclose(fila);
+    printf("\n le résultat a été bien été archivé \n");}
     //fermeture de sockfd
     shutdown(sockfd,2);
     close(sockfd);
@@ -194,7 +209,7 @@ int main(int argc, char *argv[]){
         int n;
         recv(connfd,Buff,1025,0);
         while(1){
-		printf("\n Choix d'option :\n 1. Inscrire le client\n 2. Envoyer un script \n 3. Exit\n");
+		printf("\n Choix d'option :\n 1. Inscrire le client\n 2. Envoyer un script \n 3. Affichage des résultats des anciens script \n 4. Exit\n");
 		scanf("%d",&num);
                 bzero(file,48000);
 		switch (num){
@@ -239,8 +254,11 @@ int main(int argc, char *argv[]){
 					printf("\ny a que c'est 3 choix\n");
 					break;}
                         break;
+		case 3:
+		
+		showresult();
 			
-		case 3: 
+		case 4: 
 			bzero(file,48000);
 			file1=loadfile("exit.txt",file);
 			sendfile(Buff, file1);
