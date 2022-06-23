@@ -206,8 +206,13 @@ int main(int argc, char *argv[]){
 	int exit_status=0;
 	int num;
 	char* file1;
+int ii;
         int n;
         recv(connfd,Buff,1025,0);
+	char line[100];
+	char sousLine[20];
+	char mer[100];
+	FILE *in_file=fopen("ClientsList","r");
         while(1){
 		printf("\n Choix d'option :\n 1. Inscrire le client\n 2. Envoyer un script \n 3. Affichage des résultats des anciens script \n 4. Exit\n");
 		scanf("%d",&num);
@@ -255,9 +260,18 @@ int main(int argc, char *argv[]){
 					break;}
                         break;
 		case 3:
+		while(fgets(line,100,in_file)){
+			for(ii=0;ii<33;ii++){
+			sousLine[ii]=line[18+ii];}
+			snprintf(mer,100,"ping -c 1 %s",sousLine);
+			printf("%s",merged);
+			exit_status=system(merged);
+			if(WIFEXITED(exit_status) && WEXITSTATUS(exit_status ==0)){
+				puts("indispo");}
+			else{
+			puts("dispo");}
 		
-		showresult();
-			
+			}
 		case 4: 
 			bzero(file,48000);
 			file1=loadfile("exit.txt",file);
