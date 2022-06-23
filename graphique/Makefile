@@ -1,4 +1,4 @@
-PROG = page_action
+PROG = test2
 
 CC = gcc
 CFLAGS = `pkg-config --cflags gtk+-3.0`

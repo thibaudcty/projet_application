@@ -34,6 +34,27 @@ void button_clicked(GtkWidget *widget, gpointer data){
 int main(int argc, char **argv){
 
 gtk_init (&argc, &argv);
+//lecture de texte
+
+FILE    *textfile;
+char    *text;
+long    numbytes;
+
+textfile = fopen("texte.txt", "r");
+if(textfile == NULL)
+return 1;
+
+fseek(textfile, 0L, SEEK_END);
+numbytes = ftell(textfile);
+fseek(textfile, 0L, SEEK_SET);  
+
+text = (char*)calloc(numbytes, sizeof(char));   
+if(text == NULL)
+return 1;
+
+fread(text, sizeof(char), numbytes, textfile);
+fclose(textfile);
+
 
 //on met le code gtk ici
 GtkWidget *window;
@@ -41,8 +62,10 @@ GtkWidget *fixed;
 
 GtkWidget *button1;
 GtkWidget *button2;
-GtkWidget *label;
-
+GtkWidget *label; 
+GtkWidget *textview;
+GtkTextBuffer *textbuffer;
+ 
 window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 gtk_window_set_title(GTK_WINDOW(window), "GUI du projet d'application euromed");
 gtk_window_set_default_size(GTK_WINDOW(window), 500, 500);
@@ -52,16 +75,26 @@ fixed = gtk_fixed_new();
 button1 = gtk_button_new_with_label("bouton1");
 button2 = gtk_button_new_with_label("bouton2");
 label = gtk_label_new("Bienvenue dans notre application :)");
+textview = gtk_text_view_new_with_buffer(textbuffer);
 
 g_signal_connect(button2, "clicked", G_CALLBACK(button_clicked),NULL);
 
 gtk_fixed_put(GTK_FIXED(fixed), button1, 100, 50);
 gtk_fixed_put(GTK_FIXED(fixed), button2, 200, 100);
 gtk_fixed_put(GTK_FIXED(fixed), label, 80, 20);
+gtk_fixed_put(GTK_FIXED(fixed), textview, 250, 250);
 
 gtk_fixed_move(GTK_FIXED(fixed), button1, 200,100);
 gtk_fixed_move(GTK_FIXED(fixed), button2, 350,205);
 //gtk_fixed_move(GTK_FIXED(fixed), label, 100,205);
+
+
+//--------------text buffer
+
+textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+gtk_text_buffer_set_text(textbuffer, (const gchar *) text, (gint) -1);
+
+
 
 g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL); //permet de terminer le programme quand on ferme la fenetre
 

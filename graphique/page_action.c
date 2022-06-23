@@ -1,17 +1,18 @@
 #include <gtk/gtk.h>
 
-void button_clicked(GtkWidget *widget, gpointer data){
+void button_clicked(GtkWidget *widget, gpointer window){
 	g_print("button clicked \n");
 	FILE* demo;
-     const char * command = "./page_acceuil"; 
+	gtk_close_window(window);
+     const char * command = " ^C "; 
      int cr = system( command );
-     const char * command2 = "./^C"; 
-     int cr = system( command );
-    if ( cr != 0 ) {
+     if ( cr != 0 ) {
         fprintf( stderr, 
                  "Impossible de lancer la commande : %s\n",
                  command );
     }
+  
+     
    }
    
 
