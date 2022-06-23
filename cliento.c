@@ -44,6 +44,10 @@ void receivefile(char *file){
     int listenfd=0 ;
     int connfd=0 ;
     struct sockaddr_in serv_addr = {0};
+    char str[48000]={0};
+    strcpy(str,"exit");
+    int ret;
+   
    
     // Création de la socket serveur
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -69,27 +73,33 @@ void receivefile(char *file){
             bzero(file,48000);
 	    //reception du buffer contenant le script du fichier envoye par le maitre
 	    recv(connfd, file, 48000, 0);
-	    printf("\n Le contenu du buffer reçu  :\n %s", file);
-	    //ouverture du fichier et ecriture dans celui ci du contenu du buffer
-	    FILE *fi = NULL;
-	    fi = fopen("scriptt.sh","w+");
-	    fprintf(fi,"%s",file);
-	    fclose(fi);
+            ret = strcmp(str,file);
+            printf("la diff %s",file);
+            if(ret<0){
+		printf("\n Fin de conenxion \n");
+		exit(0);}
+	    else{
+		    printf("\n Le contenu du buffer reçu  :\n %s", file);
+	            //ouverture du fichier et ecriture dans celui ci du contenu du buffer
+		    FILE *fi = NULL;
+		    fi = fopen("scriptt.sh","w+");
+		    fprintf(fi,"%s",file);
+		    fclose(fi);
 
-	    printf("\n Le script a été bien stocké dans le fichier \n");
-	    //execution du script
-	    system("~/projet_application/projet_application/scriptt.sh");
-	    //Envoie du résultat du script vers le serveur
-	    bzero(file, 48000);
-	    //chargement du contenu fichier resultat dans le buffer
-	    char *file1=loadfile("taille.txt", file);
-	    //Envoie du buffer avec la fonction send  
-	    if(send(connfd, file1, strlen(file1), 0)==-1){
-		perror("error sending file");
-		exit(1);
-		}
+		    printf("\n Le script a été bien stocké dans le fichier \n");
+		    //execution du script
+		    system("~/projet_application/projet_application/scriptt.sh");
+		    //Envoie du résultat du script vers le serveur
+		    bzero(file, 48000);
+		    //chargement du contenu fichier resultat dans le buffer
+		    char *file1=loadfile("taille.txt", file);
+		    //Envoie du buffer avec la fonction send  
+		    if(send(connfd, file1, strlen(file1), 0)==-1){
+			perror("error sending file");
+			exit(1);
+			}
 
-	    printf("\n Le résultat a été bien envoyé au serveur \n");
+		    printf("\n Le résultat a été bien envoyé au serveur \n");}
 	    //fermeture des sockets listenfd et connfd
 	    shutdown(connfd,2);
 	  

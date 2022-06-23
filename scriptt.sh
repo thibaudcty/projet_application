@@ -1,2 +1,2 @@
 #!/bin/bash
-date -R  >taille.txt
+df -h >taille.txt
