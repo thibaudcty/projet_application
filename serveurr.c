@@ -195,7 +195,7 @@ int main(int argc, char *argv[]){
         recv(connfd,Buff,1025,0);
         
         while(1){
-		printf("\n Choix d'option :\n 1. Inscrire le client\n 2. Envoyer un script \n 3. Exit\n");
+		printf("\n Choix d'option :\n 1. Inscrire le client\n 2. Envoyer un script \n 3. Exit\n 4. Check connection\n");
 		scanf("%d",&num);
                 bzero(file,48000);
 		switch (num){
@@ -206,14 +206,14 @@ int main(int argc, char *argv[]){
 			break;
 		case 2:
 			//le ping
-			snprintf(merged,1025,"ping -c 1 %s", Buff);
+		/*	snprintf(merged,1025,"ping -c 1 %s", Buff);
 			printf("%s\n",merged);
                         exit_status=system(merged);
 			if(WIFEXITED(exit_status) && WEXITSTATUS(exit_status ==0)){
 				puts("-----------Indisponible !!!!!!----------");}
 			else{
 				puts("-----------Disponible !!------------");}
-			
+			*/
 			printf("\n Choix de script :\n 1. script1.sh\n 2. script2.sh \n 3. script3.sh\n");
 		        scanf("%d",&n);
 			switch(n){
@@ -247,6 +247,18 @@ int main(int argc, char *argv[]){
 			sendfile(Buff, file1);
 			printf("\n a dios\n");
 			exit(0);
+			break;
+
+		case 4:
+			snprintf(merged,1025,"ping -c 1 %s",Buff);
+			printf("%s\n",merged);
+			exit_status=system(merged);
+			if(WIFEXITED(exit_status) && WEXITSTATUS(exit_status ==0)){
+				puts("----------------NON CONNECTEE-----------------");}
+			else{
+				puts("---------------- CONNECTEE -------------------");
+}
+			break;
 		default:
 			printf("\n y a que 1, 2 et 3 hhh \n");
 			break;
