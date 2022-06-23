@@ -1,6 +1,6 @@
 Sys. de fichiers Taille Utilisé Dispo Uti% Monté sur
 tmpfs              248M    1,5M  247M   1% /run
-/dev/sda3           34G     11G   22G  33% /
+/dev/sda3           34G     11G   22G  32% /
 tmpfs              1,3G       0  1,3G   0% /dev/shm
 tmpfs              5,0M    4,0K  5,0M   1% /run/lock
 /dev/sda2          512M    5,3M  507M   2% /boot/efi

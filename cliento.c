@@ -184,6 +184,10 @@ void inscrire(int fd){
 
 int main(int argc, char *argv[]){
    
+   char *add[10]={0};
+    printf("saisissez l'adresse Ip de serveur\n");
+    scanf("%s",&add);
+    
     char *file[48000];
     bzero(file, 48000);
     char recvBuff[1024]={0};
@@ -197,12 +201,12 @@ int main(int argc, char *argv[]){
      * Si l'IP du serveur n'a pas été passée en argument
      * le programme se termine
      */
-    if(argc != 2)
+   /* if(argc != 2)
     {
         printf("\n Usage: %s <ip of server> \n",argv[0]);
         return 1;
     }
-    
+    */
     // Création de la socket
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -217,7 +221,7 @@ int main(int argc, char *argv[]){
     serv_addr.sin_port = htons(7000);
     
     // Copie l'adresse ip du serveur dans la structure serv_addr
-    if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)
+    if(inet_pton(AF_INET, add, &serv_addr.sin_addr)<=0)
     {
         printf("\n inet_pton error occured\n");
         return 1;
@@ -231,7 +235,7 @@ int main(int argc, char *argv[]){
     }
     //Enregistrement des données du serveur dans un fichier
     FILE*  fichier = fopen("ServerList.txt", "w");
-    fprintf(fichier, "Adresse du serveur :%s \n", argv[1]); 
+    fprintf(fichier, "Adresse du serveur :%s \n", add); 
     fclose(fichier);
     //Appel de la fonction inscrire pour envoyer l'adresse ip du client au serveur
     inscrire(sockfd);
