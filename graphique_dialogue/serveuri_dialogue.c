@@ -251,7 +251,7 @@ int main(int argc, char *argv[]){
 	pid = fork();
 	if(pid == 0){
 		printf("process enfant\n");
-		system("dialog --clear --title \"Projet Application Euromed\" \ --menu \"Bonjour, choisissez l'action que vous souhaitez exécuter\" 20 51 4     1 \"Inscrire le client\"   2 \"Envoyer un script\"           3 \"Affichage des résultats des anciens script\"   4 \"Exit\" 2> fiche.txt ");
+		system("dialog --clear --title \"Projet Application Euromed\" \ --menu \"Bonjour, choisissez l'action que vous souhaitez exécuter\" 20 51 5     1 \"Inscrire le client\"   2 \"Envoyer un script\"           3 \"Affichage des résultats des anciens script\"  4 \"Test de connection\"  5 \"Exit\" 2> fiche.txt ");
                 
                 n =lecture();
                 printf("%d", n);
@@ -314,8 +314,21 @@ int main(int argc, char *argv[]){
 		showresult();
 		
 		break;
+		
+		case 4:
+			snprintf(merged,1025,"ping -c 1 %s",Buff);
+			printf("%s\n",merged);
+			exit_status=system(merged);
+			if(WIFEXITED(exit_status) && WEXITSTATUS(exit_status ==0)){
+				puts("----------------NON CONNECTEE-----------------");
+				system("dialog --infobox \" NON CONNECTEE \" 10 30 ; sleep 1 ");}
+			else{
+				puts("---------------- CONNECTEE -------------------");
+				system("dialog --infobox \" CONNECTEE \" 10 30 ; sleep 1 ");}
+
+			break;
 			
-		case 4: 
+		case 5: 
 			bzero(file,48000);
 			file1=loadfile("exit.txt",file);
 			sendfile(Buff, file1);
